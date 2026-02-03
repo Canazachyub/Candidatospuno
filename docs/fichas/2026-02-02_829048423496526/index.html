@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Óscar Gonzales Huamán - Ficha Electoral</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+        .header img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        .header-info { flex: 1; }
+        .header-info h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .chip-party { background: #ff5722; }
+        .chip-region { background: #4caf50; }
+        .chip-role { background: #2196f3; }
+        .source-link {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .source-link:hover { color: white; }
+
+        /* Risk Badge */
+        .risk-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .header { position: relative; }
+
+        /* Sections */
+        .section {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .section:last-child { border-bottom: none; }
+        .section h2 {
+            color: #1a237e;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .section h3 {
+            color: #424242;
+            font-size: 15px;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Table */
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .info-table th {
+            background: #f8f9fa;
+            color: #65676b;
+            font-weight: 600;
+            width: 30%;
+        }
+
+        /* Lists */
+        .profile-list { list-style: none; }
+        .profile-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+            padding-left: 20px;
+            position: relative;
+        }
+        .profile-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #1a237e;
+        }
+        .profile-list li:last-child { border-bottom: none; }
+
+        /* Info Cards */
+        .cards-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            flex: 1;
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #1a237e;
+        }
+        .info-card h4 {
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .info-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1c1e21;
+        }
+        .info-card .detail {
+            color: #65676b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* Red Flags */
+        .redflags { background: #fff8e1; }
+        .redflag-item {
+            background: white;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .redflag-item.high { border-left-color: #f44336; background: #ffebee; }
+        .redflag-item.medium { border-left-color: #ff9800; }
+        .redflag-type {
+            font-weight: bold;
+            color: #f57c00;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .redflag-item.high .redflag-type { color: #c62828; }
+        .redflag-evidence {
+            font-style: italic;
+            color: #65676b;
+            margin: 8px 0;
+            font-size: 13px;
+            padding: 10px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 5px;
+        }
+        .redflag-notes { font-size: 14px; }
+
+        /* Sensitive */
+        .sensitive { background: #fce4ec; }
+        .sensitive h3 { color: #c62828; }
+        .sensitive ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .sensitive li {
+            padding: 8px 12px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        /* Social Section */
+        .social-section input, .social-section textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .social-section input:focus, .social-section textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+        }
+        .social-section label {
+            font-weight: 600;
+            color: #424242;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #65676b;
+            font-size: 12px;
+        }
+        .footer a { color: #1a237e; }
+
+        /* Bio Summary */
+        .bio-summary {
+            background: #e8eaf6;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; text-align: center; }
+            .header img { margin: 0 auto; }
+            .chips { justify-content: center; }
+            .cards-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="imagen.jpg"
+                 alt="Foto del candidato"
+                 onerror="this.src='https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/619258514_829048430163192_3999807875206069936_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHuVewPkhbAJaS43SMZW1b-GH7kdNaimDQYfuR01qKYNM_0_sJVo2LQ8edS0Z6JwasEQnvJm5EfkHWjU8S0gwXk&_nc_ohc=_Wcsrj3MysIQ7kNvwGxCHad&_nc_oc=Adk3N8U8bJpzHkYz9_yIlYbFoIBUl-6Rwnz_4jNeFdeS22UHcMPLhrsTPIw_ChWAqfI&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=p3Ze956omvXO9Y3Ro2G4jQ&oh=00_AfsYq7DVk2zOXeIo3_hWns3JmBNywltK-WiVzs4RqdAjcA&oe=6986B124'" />
+            <div class="header-info">
+                <h1>Óscar Gonzales Huamán</h1>
+                <div class="chips">
+                    <span class="chip chip-party">Partido Político Cooperación Popular</span>
+                    <span class="chip chip-region">Puno</span>
+                    <span class="chip chip-role">No especifica</span>
+                </div>
+                <a href="https://www.facebook.com/photo/?fbid=829048423496526&set=a.128560603545315" target="_blank" class="source-link">
+                    📎 Ver publicación original en Facebook →
+                </a>
+            </div>
+            <div class="risk-badge">
+                Riesgo: 3.5/5
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Información General</h2>
+            <table class="info-table">
+                <tr><th>Nombre completo</th><td>Óscar Gonzales Huamán</td></tr>
+                <tr><th>Partido político</th><td>Partido Político Cooperación Popular</td></tr>
+                <tr><th>Cargo al que postula</th><td>No especifica</td></tr>
+                <tr><th>Región / Ciudad</th><td>Puno / Juliaca</td></tr>
+                <tr><th>Fuente</th><td><a href="https://www.facebook.com/photo/?fbid=829048423496526&set=a.128560603545315">Alberdy Cordova Rivera</a> - 02 de February de 2026</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>👤 Resumen del Perfil</h2>
+            <div class="bio-summary">
+                Candidato político de Puno con perfil empresarial y formación en Derecho y Administración. Su trayectoria se caracteriza por una aparente doble afiliación partidaria, siendo fundador y dirigente en el partido Verdad y Honradez mientras postula por el Partido Político Cooperación Popular. Posee un patrimonio significativo derivado de su actividad empresarial.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Formación y Experiencia</h2>
+
+            <h3>🎓 Educación</h3>
+            <ul class="profile-list"><li>Bachiller en Derecho - Universidad Andina Néstor Cáceres Velásquez (2008)</li><li>Título de abogado - Universidad Andina Néstor Cáceres Velásquez (2009)</li><li>Maestría en Administración con mención en Gestión Pública - Universidad Nacional San Antonio Abad del Cusco (No especifica)</li></ul>
+
+            <h3>💼 Experiencia Laboral</h3>
+            <ul class="profile-list"><li>Servicios y Distribuciones Robiluz SAC | Gerente (2018 - 2025)</li></ul>
+        </div>
+
+        <div class="section">
+            <h2>💵 Declaraciones Económicas</h2>
+            <div class="cards-row">
+                
+            <div class="info-card">
+                <h4>💰 Declaración de Ingresos (No especifica)</h4>
+                <p class="amount">S/ S/ 30,000</p>
+                <p class="detail">Ejercicio independiente de su profesión</p>
+            </div>
+            
+                
+            <div class="info-card">
+                <h4>🏠 Patrimonio Declarado</h4>
+                <p class="amount">S/ No especifica</p>
+                <p class="detail">Inmuebles: Cuatro predios en Juliaca</p>
+                <p class="detail">Vehículos: Toyota Hilux 4x4 de segundo uso</p>
+            </div>
+            
+            </div>
+        </div>
+
+        <div class="section redflags">
+            <h2>⚠️ Análisis de Riesgo</h2>
+            <p style="margin-bottom: 15px;">
+                <strong>Score general:</strong>
+                <span style="background: #fff3e0; color: #f57c00; padding: 5px 12px; border-radius: 5px; font-weight: bold;">
+                    3.5 / 5
+                </span>
+            </p>
+            
+            <div class="redflag-item high">
+                <span class="redflag-type">[afiliacion] Severidad: 4/5</span>
+                <div class="redflag-evidence">"Según los registros oficiales del Jurado Nacional de Elecciones, Gonzales Huamán figura como afiliado inscrito en el partido Verdad y Honradez... Sin embargo, en su declaración jurada de candidato, se presenta postulando por el Partido Político Cooperación Popular, lo que abre un debate sobre la legalidad y transparencia de su postulación, pues la normativa electoral prohíbe estar afiliado a un partido distinto al que se representa en elecciones."</div>
+                <div class="redflag-notes">Posible doble militancia o incumplimiento de la normativa electoral sobre afiliación única para candidatos.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[inconsistencia] Severidad: 3/5</span>
+                <div class="redflag-evidence">"El caso de Óscar Gonzales Huamán expone una paradoja que no pasa desapercibida: mientras se presenta como dirigente y fundador de un partido recién inscrito, busca representar a otro en las urnas."</div>
+                <div class="redflag-notes">Contradicción entre su rol de fundador/dirigente en un partido y su candidatura por otro, generando dudas sobre coherencia política.</div>
+            </div>
+            
+        </div>
+
+        
+            <div class="section sensitive">
+                <h3>⚠️ Información Sensible Detectada</h3>
+                <ul><li>15 de junio de 1977</li><li>Juliaca</li></ul>
+            </div>
+            
+
+        <div class="section social-section">
+            <h2>📱 Redes Sociales (Llenado Manual)</h2>
+
+            <label>Facebook:</label>
+            <input type="text" placeholder="URL del perfil de Facebook" />
+
+            <label>Instagram:</label>
+            <input type="text" placeholder="@usuario" />
+
+            <label>TikTok:</label>
+            <input type="text" placeholder="@usuario" />
+
+            <label>WhatsApp:</label>
+            <input type="text" placeholder="Número de contacto" />
+
+            <label>Observaciones de actividad en redes:</label>
+            <textarea rows="3" placeholder="Notas sobre actividad, seguidores, tipo de contenido..."></textarea>
+
+            <label>Mapa de actividad (enlaces y hallazgos):</label>
+            <textarea rows="3" placeholder="Pegar enlaces relevantes encontrados..."></textarea>
+        </div>
+
+        <div class="footer">
+            <p>Ficha generada automáticamente | Scraping: 2026-02-02 13:43:52 | Post ID: 829048423496526</p>
+            <p>Candidate ID: 829048423496526_OscarGonzalesHuaman</p>
+        </div>
+    </div>
+</body>
+</html>

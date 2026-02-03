@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ángel Gumercindo Huanca Yampara - Ficha Electoral</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+        .header img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        .header-info { flex: 1; }
+        .header-info h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .chip-party { background: #ff5722; }
+        .chip-region { background: #4caf50; }
+        .chip-role { background: #2196f3; }
+        .source-link {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .source-link:hover { color: white; }
+
+        /* Risk Badge */
+        .risk-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .header { position: relative; }
+
+        /* Sections */
+        .section {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .section:last-child { border-bottom: none; }
+        .section h2 {
+            color: #1a237e;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .section h3 {
+            color: #424242;
+            font-size: 15px;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Table */
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .info-table th {
+            background: #f8f9fa;
+            color: #65676b;
+            font-weight: 600;
+            width: 30%;
+        }
+
+        /* Lists */
+        .profile-list { list-style: none; }
+        .profile-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+            padding-left: 20px;
+            position: relative;
+        }
+        .profile-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #1a237e;
+        }
+        .profile-list li:last-child { border-bottom: none; }
+
+        /* Info Cards */
+        .cards-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            flex: 1;
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #1a237e;
+        }
+        .info-card h4 {
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .info-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1c1e21;
+        }
+        .info-card .detail {
+            color: #65676b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* Red Flags */
+        .redflags { background: #fff8e1; }
+        .redflag-item {
+            background: white;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .redflag-item.high { border-left-color: #f44336; background: #ffebee; }
+        .redflag-item.medium { border-left-color: #ff9800; }
+        .redflag-type {
+            font-weight: bold;
+            color: #f57c00;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .redflag-item.high .redflag-type { color: #c62828; }
+        .redflag-evidence {
+            font-style: italic;
+            color: #65676b;
+            margin: 8px 0;
+            font-size: 13px;
+            padding: 10px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 5px;
+        }
+        .redflag-notes { font-size: 14px; }
+
+        /* Sensitive */
+        .sensitive { background: #fce4ec; }
+        .sensitive h3 { color: #c62828; }
+        .sensitive ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .sensitive li {
+            padding: 8px 12px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        /* Social Section */
+        .social-section input, .social-section textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .social-section input:focus, .social-section textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+        }
+        .social-section label {
+            font-weight: 600;
+            color: #424242;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #65676b;
+            font-size: 12px;
+        }
+        .footer a { color: #1a237e; }
+
+        /* Bio Summary */
+        .bio-summary {
+            background: #e8eaf6;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; text-align: center; }
+            .header img { margin: 0 auto; }
+            .chips { justify-content: center; }
+            .cards-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="imagen.jpg"
+                 alt="Foto del candidato"
+                 onerror="this.src='https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/623403243_828464170221618_9098627349369541352_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFnNxJKW-vUp6dnHhZr72Z7ZzrH46HLVRdnOsfjoctVFwUyLS1N4OcNzxNMz-SrTqCYOcQznGmu5T8WMvlpvDDL&_nc_ohc=4qLJLzDbvwAQ7kNvwHtdibk&_nc_oc=AdmwpTM3dhNNmWyRQq-6P-JU_rxzpDX6qOx_KgQz9rcPa7UHtzTBiQNGfBlKq3PAQZM&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=QTHHcpWO7qeQr-gbI56txg&oh=00_AfsLrtoQb-RCy6EN4ektQeQLrLiS3u5unsPzflQvYUljaQ&oe=6986F6BB'" />
+            <div class="header-info">
+                <h1>Ángel Gumercindo Huanca Yampara</h1>
+                <div class="chips">
+                    <span class="chip chip-party">PRIN</span>
+                    <span class="chip chip-region">Puno</span>
+                    <span class="chip chip-role">Senador</span>
+                </div>
+                <a href="https://www.facebook.com/photo?fbid=828464163554952&set=a.128560603545315" target="_blank" class="source-link">
+                    📎 Ver publicación original en Facebook →
+                </a>
+            </div>
+            <div class="risk-badge">
+                Riesgo: 3/5
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Información General</h2>
+            <table class="info-table">
+                <tr><th>Nombre completo</th><td>Ángel Gumercindo Huanca Yampara</td></tr>
+                <tr><th>Partido político</th><td>PRIN</td></tr>
+                <tr><th>Cargo al que postula</th><td>Senador</td></tr>
+                <tr><th>Región / Ciudad</th><td>Puno / San Juan del Oro</td></tr>
+                <tr><th>Fuente</th><td><a href="https://www.facebook.com/photo?fbid=828464163554952&set=a.128560603545315">En Primera Plana</a> - 02 de February de 2026</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>👤 Resumen del Perfil</h2>
+            <div class="bio-summary">
+                Abogado titulado por la Universidad Nacional del Altiplano, afiliado al partido PRIN desde enero de 2022. Se desempeña como Secretario de la Comisión Política Nacional del partido y miembro del comité de Juliaca. Postula al cargo de Senador por la región de Puno.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Formación y Experiencia</h2>
+
+            <h3>🎓 Educación</h3>
+            <ul class="profile-list"><li>Bachiller en Ciencias Jurídicas y Políticas - Universidad Nacional del Altiplano (2004)</li><li>Abogado titulado - Universidad Nacional del Altiplano (2006)</li></ul>
+
+            <h3>💼 Experiencia Laboral</h3>
+            <ul class="profile-list"><li>Ejercicio privado como abogado | ['Abogado'] (No especifica)</li></ul>
+        </div>
+
+        <div class="section">
+            <h2>💵 Declaraciones Económicas</h2>
+            <div class="cards-row">
+                
+            <div class="info-card">
+                <h4>💰 Declaración de Ingresos (2024)</h4>
+                <p class="amount">S/ S/ 45,600</p>
+                <p class="detail">Ingresos exclusivamente por ejercicio privado como abogado. No percibe ingresos por planilla ni por actividades públicas.</p>
+            </div>
+            
+                
+            <div class="info-card">
+                <h4>🏠 Patrimonio Declarado</h4>
+                <p class="amount">S/ S/ 90,000</p>
+                <p class="detail">Inmuebles: None</p>
+                <p class="detail">Vehículos: ['Hyundai Excel', 'Nissan Pulsar', 'Chevrolet Sonic']</p>
+            </div>
+            
+            </div>
+        </div>
+
+        <div class="section redflags">
+            <h2>⚠️ Análisis de Riesgo</h2>
+            <p style="margin-bottom: 15px;">
+                <strong>Score general:</strong>
+                <span style="background: #fff3e0; color: #f57c00; padding: 5px 12px; border-radius: 5px; font-weight: bold;">
+                    3 / 5
+                </span>
+            </p>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[experiencia_limitada] Severidad: 3/5</span>
+                <div class="redflag-evidence">"Huanca Yampara no registra estudios de posgrado ni especializaciones adicionales. En un escenario político donde la preparación académica es cada vez más exigida, la ausencia de formación superior más allá de la licenciatura deja abierta la duda sobre si su bagaje es suficiente para enfrentar los retos legislativos nacionales."</div>
+                <div class="redflag-notes">Falta de formación de posgrado o especialización, lo que podría limitar su capacidad técnica para el cargo legislativo.</div>
+            </div>
+            
+            <div class="redflag-item high">
+                <span class="redflag-type">[patrimonio] Severidad: 4/5</span>
+                <div class="redflag-evidence">"¿Cómo explicar que un profesional con más de una década de ejercicio carezca de propiedades inmobiliarias, pero acumule vehículos de alto valor? La transparencia patrimonial se convierte en un punto de fricción."</div>
+                <div class="redflag-notes">Inconsistencia patrimonial entre ingresos declarados, ausencia de bienes inmuebles y posesión de vehículos de alto valor.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[afiliacion] Severidad: 3/5</span>
+                <div class="redflag-evidence">"El rápido ascenso dentro del PRIN, pasando de afiliado a dirigente nacional en menos de un año, despierta suspicacias sobre el verdadero peso de su liderazgo. ¿Es fruto de mérito y militancia, o de acuerdos internos que lo catapultaron a la cúpula partidaria?"</div>
+                <div class="redflag-notes">Ascenso político rápido dentro del partido, lo que genera dudas sobre la legitimidad de su liderazgo y posibles acuerdos internos.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[inconsistencia] Severidad: 2/5</span>
+                <div class="redflag-evidence">"Su declaración jurada de 2024 expone una realidad que contrasta con su discurso político."</div>
+                <div class="redflag-notes">Contraste percibido entre su situación económica declarada y el discurso político que presenta.</div>
+            </div>
+            
+        </div>
+
+        
+            <div class="section sensitive">
+                <h3>⚠️ Información Sensible Detectada</h3>
+                <ul><li>Ángel Gumercindo Huanca Yampara, nacido en San Juan del Oro en 1976</li></ul>
+            </div>
+            
+
+        <div class="section social-section">
+            <h2>📱 Redes Sociales Identificadas</h2>
+
+            <label>Facebook:</label>
+            <input type="text" value="https://www.facebook.com/angel.gumercindo.huancayampara" readonly style="background: #e8f5e9;" />
+
+            <label>Instagram:</label>
+            <input type="text" value="" placeholder="@usuario" />
+
+            <label>TikTok:</label>
+            <input type="text" value="" placeholder="@usuario" />
+
+            <label>WhatsApp:</label>
+            <input type="text" placeholder="Número de contacto" />
+
+            <label>Observaciones de actividad en redes:</label>
+            <textarea rows="3" style="background: #e8f5e9;">Facebook: 1.9K seguidores seguidores</textarea>
+
+            <label>Mapa de actividad (enlaces y hallazgos):</label>
+            <textarea rows="3" placeholder="Pegar enlaces relevantes encontrados..."></textarea>
+        </div>
+
+        <div class="footer">
+            <p>Ficha generada automáticamente | Scraping: 2026-02-02 16:12:14 | Post ID: 828464163554952</p>
+            <p>Candidate ID: 828464163554952_AngelHuancaYampara</p>
+        </div>
+    </div>
+</body>
+</html>

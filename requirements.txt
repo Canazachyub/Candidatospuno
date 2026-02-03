@@ -1,0 +1,28 @@
+# Facebook Scraper - Dependencias
+# Instalar con: pip install -r requirements.txt
+
+# Scraping
+selenium==4.15.2
+webdriver-manager==4.0.1
+undetected-chromedriver==3.5.4
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# Procesamiento de datos
+pandas==2.1.3
+openpyxl==3.1.2
+
+# Descarga y procesamiento de imagenes
+requests==2.31.0
+Pillow==10.1.0
+
+# Interfaz grafica
+customtkinter==5.2.1
+
+# Utilidades
+python-dotenv==1.0.0
+tqdm==4.66.1
+colorama==0.4.6
+
+# Logging
+loguru==0.7.2

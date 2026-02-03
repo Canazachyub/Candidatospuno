@@ -1,0 +1,35 @@
+{
+  "scraper": {
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "window_size": [1920, 1080],
+    "page_load_timeout": 15,
+    "implicit_wait": 3
+  },
+  "delays": {
+    "min_delay": 1,
+    "max_delay": 2,
+    "scroll_delay": 0.3,
+    "page_load_wait": 2
+  },
+  "download": {
+    "timeout": 30,
+    "max_retries": 3,
+    "image_quality": "high",
+    "download_images": true
+  },
+  "output": {
+    "folder_name_format": "{date}_{id}",
+    "image_format": "jpg",
+    "text_encoding": "utf-8"
+  },
+  "excel": {
+    "sheet_name": "Publicaciones Facebook",
+    "freeze_panes": true,
+    "auto_filter": true
+  },
+  "browser": {
+    "headless": false,
+    "disable_notifications": true,
+    "disable_gpu": false
+  }
+}

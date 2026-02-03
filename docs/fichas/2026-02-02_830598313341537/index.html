@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubén Alemán Gonzales - Ficha Electoral</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+        .header img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        .header-info { flex: 1; }
+        .header-info h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .chip-party { background: #ff5722; }
+        .chip-region { background: #4caf50; }
+        .chip-role { background: #2196f3; }
+        .source-link {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .source-link:hover { color: white; }
+
+        /* Risk Badge */
+        .risk-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            background: #ffebee;
+            color: #c62828;
+        }
+        .header { position: relative; }
+
+        /* Sections */
+        .section {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .section:last-child { border-bottom: none; }
+        .section h2 {
+            color: #1a237e;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .section h3 {
+            color: #424242;
+            font-size: 15px;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Table */
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .info-table th {
+            background: #f8f9fa;
+            color: #65676b;
+            font-weight: 600;
+            width: 30%;
+        }
+
+        /* Lists */
+        .profile-list { list-style: none; }
+        .profile-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+            padding-left: 20px;
+            position: relative;
+        }
+        .profile-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #1a237e;
+        }
+        .profile-list li:last-child { border-bottom: none; }
+
+        /* Info Cards */
+        .cards-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            flex: 1;
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #1a237e;
+        }
+        .info-card h4 {
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .info-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1c1e21;
+        }
+        .info-card .detail {
+            color: #65676b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* Red Flags */
+        .redflags { background: #fff8e1; }
+        .redflag-item {
+            background: white;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .redflag-item.high { border-left-color: #f44336; background: #ffebee; }
+        .redflag-item.medium { border-left-color: #ff9800; }
+        .redflag-type {
+            font-weight: bold;
+            color: #f57c00;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .redflag-item.high .redflag-type { color: #c62828; }
+        .redflag-evidence {
+            font-style: italic;
+            color: #65676b;
+            margin: 8px 0;
+            font-size: 13px;
+            padding: 10px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 5px;
+        }
+        .redflag-notes { font-size: 14px; }
+
+        /* Sensitive */
+        .sensitive { background: #fce4ec; }
+        .sensitive h3 { color: #c62828; }
+        .sensitive ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .sensitive li {
+            padding: 8px 12px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        /* Social Section */
+        .social-section input, .social-section textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .social-section input:focus, .social-section textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+        }
+        .social-section label {
+            font-weight: 600;
+            color: #424242;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #65676b;
+            font-size: 12px;
+        }
+        .footer a { color: #1a237e; }
+
+        /* Bio Summary */
+        .bio-summary {
+            background: #e8eaf6;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; text-align: center; }
+            .header img { margin: 0 auto; }
+            .chips { justify-content: center; }
+            .cards-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="imagen.jpg"
+                 alt="Foto del candidato"
+                 onerror="this.src='https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/623267094_830598320008203_2306481957630400993_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGOwy1qZ_uRKhO3sxCjN8qaGOBJkZ-dDkkY4EmRn50OSeTjZn_DIedfB0XAd9HKE87zHA4w4Z4Ne6Zl_dgAqbQ6&_nc_ohc=-ZPlTdBuDyMQ7kNvwEI3Gau&_nc_oc=AdliYKuSVEDdnO8OLaj5Ln7F1-ewnYHldConifp9lM1ueGMXc3A59Q7N2p3Q9MTP6VY&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=XvEr1eAcjT4gDnHUuHp-jw&oh=00_Aft3QV02tNHEUVt2ABh2MiXpZv4uUCG9K1eiN937izt_Pw&oe=6986CCE2'" />
+            <div class="header-info">
+                <h1>Rubén Alemán Gonzales</h1>
+                <div class="chips">
+                    <span class="chip chip-party">Partido Político Nacional Perú Libre</span>
+                    <span class="chip chip-region">Puno</span>
+                    <span class="chip chip-role">senador</span>
+                </div>
+                <a href="https://www.facebook.com/photo/?fbid=830598313341537&set=a.128560603545315" target="_blank" class="source-link">
+                    📎 Ver publicación original en Facebook →
+                </a>
+            </div>
+            <div class="risk-badge">
+                Riesgo: 4/5
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Información General</h2>
+            <table class="info-table">
+                <tr><th>Nombre completo</th><td>Rubén Alemán Gonzales</td></tr>
+                <tr><th>Partido político</th><td>Partido Político Nacional Perú Libre</td></tr>
+                <tr><th>Cargo al que postula</th><td>senador</td></tr>
+                <tr><th>Región / Ciudad</th><td>Puno / Juliaca</td></tr>
+                <tr><th>Fuente</th><td><a href="https://www.facebook.com/photo/?fbid=830598313341537&set=a.128560603545315">En Primera Plana</a> - 02 de February de 2026</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>👤 Resumen del Perfil</h2>
+            <div class="bio-summary">
+                Candidato al Senado por Puno por Perú Libre. Tiene una trayectoria laboral variada en el sector público y privado, incluyendo roles administrativos en programas de vivienda rural y en la empresa de agua Seda Juliaca, además de ser administrador de su propia distribuidora y papelería. Declara un patrimonio inmobiliario significativo y ha trabajado como docente universitario durante una década.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Formación y Experiencia</h2>
+
+            <h3>🎓 Educación</h3>
+            <ul class="profile-list"><li>Contabilidad - No especifica (None)</li><li>Doctorado en Administración - No especifica (None)</li><li>Maestría en Educación - No especifica (None)</li></ul>
+
+            <h3>💼 Experiencia Laboral</h3>
+            <ul class="profile-list"><li>Programas estatales de vivienda rural | ['coordinador administrativo'] (No especifica)</li><li>Seda Juliaca | ['gerente de administración'] (No especifica)</li><li>Distribuidora y papelería propia | ['administrador'] (No especifica)</li><li>Universidad en Puno | ['docente universitario'] (Una década)</li></ul>
+        </div>
+
+        <div class="section">
+            <h2>💵 Declaraciones Económicas</h2>
+            <div class="cards-row">
+                <div class="info-card"><h4>💰 Ingresos</h4><p>No declarado</p></div>
+                
+            <div class="info-card">
+                <h4>🏠 Patrimonio Declarado</h4>
+                <p class="amount">S/ Superior a 810,000 soles (800,000 + 10,000 en participaciones)</p>
+                <p class="detail">Inmuebles: ['5 propiedades en SUNARP (casas y departamentos en Juliaca y Arequipa)', 'terreno en Caracoto, provincia de San Román']</p>
+                <p class="detail">Vehículos: None</p>
+            </div>
+            
+            </div>
+        </div>
+
+        <div class="section redflags">
+            <h2>⚠️ Análisis de Riesgo</h2>
+            <p style="margin-bottom: 15px;">
+                <strong>Score general:</strong>
+                <span style="background: #ffebee; color: #c62828; padding: 5px 12px; border-radius: 5px; font-weight: bold;">
+                    4 / 5
+                </span>
+            </p>
+            
+            <div class="redflag-item high">
+                <span class="redflag-type">[patrimonio] Severidad: 4/5</span>
+                <div class="redflag-evidence">"Todo esto contrasta con la ausencia de ingresos declarados, lo que abre un flanco de dudas sobre la coherencia de su situación patrimonial."</div>
+                <div class="redflag-notes">Declara un patrimonio inmobiliario superior a 800,000 soles pero no declara ingresos, lo que genera dudas sobre la procedencia y sostenibilidad de su riqueza.</div>
+            </div>
+            
+            <div class="redflag-item high">
+                <span class="redflag-type">[inconsistencia] Severidad: 4/5</span>
+                <div class="redflag-evidence">"En el ámbito académico, Alemán consigna estudios universitarios en Contabilidad y un doctorado en Administración, además de una maestría en Educación. Sin embargo, en su declaración aparecen registros duplicados y carreras como Obstetricia que, según la propia plataforma electoral, no corresponden a su DNI."</div>
+                <div class="redflag-notes">Inconsistencias y registros duplicados en su formación académica, incluyendo carreras que no corresponden a su DNI, lo que cuestiona la veracidad de la información presentada al JNE.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[informacion_sensible] Severidad: 2/5</span>
+                <div class="redflag-evidence">"El candidato registra cinco propiedades inscritas en SUNARP, con un valor comercial superior a los 800 mil soles, entre casas y departamentos en Juliaca y Arequipa. A ello se suma un terreno adicional en Caracoto, provincia de San Román"</div>
+                <div class="redflag-notes">La publicación detalla la ubicación y valor de sus propiedades, lo que podría considerarse información sensible.</div>
+            </div>
+            
+        </div>
+
+        
+            <div class="section sensitive">
+                <h3>⚠️ Información Sensible Detectada</h3>
+                <ul><li>Propiedades en Juliaca y Arequipa</li><li>Terreno en Caracoto, provincia de San Román</li></ul>
+            </div>
+            
+
+        <div class="section social-section">
+            <h2>📱 Redes Sociales Identificadas</h2>
+
+            <label>Facebook:</label>
+            <input type="text" value="https://www.facebook.com/ruben.alemangonzales" readonly style="background: #e8f5e9;" />
+
+            <label>Instagram:</label>
+            <input type="text" value="" placeholder="@usuario" />
+
+            <label>TikTok:</label>
+            <input type="text" value="" placeholder="@usuario" />
+
+            <label>WhatsApp:</label>
+            <input type="text" placeholder="Número de contacto" />
+
+            <label>Observaciones de actividad en redes:</label>
+            <textarea rows="3" style="background: #e8f5e9;">Facebook: 1.7K amigos seguidores</textarea>
+
+            <label>Mapa de actividad (enlaces y hallazgos):</label>
+            <textarea rows="3" placeholder="Pegar enlaces relevantes encontrados..."></textarea>
+        </div>
+
+        <div class="footer">
+            <p>Ficha generada automáticamente | Scraping: 2026-02-02 14:04:04 | Post ID: 830598313341537</p>
+            <p>Candidate ID: 830598313341537_RubenAlemanGonzales</p>
+        </div>
+    </div>
+</body>
+</html>

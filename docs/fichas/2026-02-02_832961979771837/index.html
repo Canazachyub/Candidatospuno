@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joel Chambilla Mamani - Ficha Electoral</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+        .header img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        .header-info { flex: 1; }
+        .header-info h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .chip-party { background: #ff5722; }
+        .chip-region { background: #4caf50; }
+        .chip-role { background: #2196f3; }
+        .source-link {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .source-link:hover { color: white; }
+
+        /* Risk Badge */
+        .risk-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .header { position: relative; }
+
+        /* Sections */
+        .section {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .section:last-child { border-bottom: none; }
+        .section h2 {
+            color: #1a237e;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .section h3 {
+            color: #424242;
+            font-size: 15px;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Table */
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .info-table th {
+            background: #f8f9fa;
+            color: #65676b;
+            font-weight: 600;
+            width: 30%;
+        }
+
+        /* Lists */
+        .profile-list { list-style: none; }
+        .profile-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+            padding-left: 20px;
+            position: relative;
+        }
+        .profile-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #1a237e;
+        }
+        .profile-list li:last-child { border-bottom: none; }
+
+        /* Info Cards */
+        .cards-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            flex: 1;
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #1a237e;
+        }
+        .info-card h4 {
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .info-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1c1e21;
+        }
+        .info-card .detail {
+            color: #65676b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* Red Flags */
+        .redflags { background: #fff8e1; }
+        .redflag-item {
+            background: white;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .redflag-item.high { border-left-color: #f44336; background: #ffebee; }
+        .redflag-item.medium { border-left-color: #ff9800; }
+        .redflag-type {
+            font-weight: bold;
+            color: #f57c00;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .redflag-item.high .redflag-type { color: #c62828; }
+        .redflag-evidence {
+            font-style: italic;
+            color: #65676b;
+            margin: 8px 0;
+            font-size: 13px;
+            padding: 10px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 5px;
+        }
+        .redflag-notes { font-size: 14px; }
+
+        /* Sensitive */
+        .sensitive { background: #fce4ec; }
+        .sensitive h3 { color: #c62828; }
+        .sensitive ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .sensitive li {
+            padding: 8px 12px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        /* Social Section */
+        .social-section input, .social-section textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .social-section input:focus, .social-section textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+        }
+        .social-section label {
+            font-weight: 600;
+            color: #424242;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #65676b;
+            font-size: 12px;
+        }
+        .footer a { color: #1a237e; }
+
+        /* Bio Summary */
+        .bio-summary {
+            background: #e8eaf6;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; text-align: center; }
+            .header img { margin: 0 auto; }
+            .chips { justify-content: center; }
+            .cards-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="imagen.jpg"
+                 alt="Foto del candidato"
+                 onerror="this.src='https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/625046788_832961983105170_8276280762500719029_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeF32DUAn3YgTKWVoWUsd68Y4BKReBZQuOzgEpF4FlC47CR9u2W9ugUhYO9MsXwk8oK2juMEX3T42JaPbY9XogMx&_nc_ohc=S5_iQMYand0Q7kNvwFJPnU2&_nc_oc=Adk9aq67kX2AFfJ2a9h3UvY3NGYIPn7q4-LMnMnJ6mvLjXeK1Teak7UHr4Js46qHyus&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=VX311wq8L7dLbxnt4z-x_w&oh=00_AfsyrI8koOou6jomSU-yOtMJx3mGhPUN3Yw7MtEQ-fc0Eg&oe=6986E252'" />
+            <div class="header-info">
+                <h1>Joel Chambilla Mamani</h1>
+                <div class="chips">
+                    <span class="chip chip-party">Progresemos</span>
+                    <span class="chip chip-region">Puno</span>
+                    <span class="chip chip-role">diputado</span>
+                </div>
+                <a href="https://www.facebook.com/photo?fbid=832961979771837&set=a.128560603545315" target="_blank" class="source-link">
+                    📎 Ver publicación original en Facebook →
+                </a>
+            </div>
+            <div class="risk-badge">
+                Riesgo: 3.5/5
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Información General</h2>
+            <table class="info-table">
+                <tr><th>Nombre completo</th><td>Joel Chambilla Mamani</td></tr>
+                <tr><th>Partido político</th><td>Progresemos</td></tr>
+                <tr><th>Cargo al que postula</th><td>diputado</td></tr>
+                <tr><th>Región / Ciudad</th><td>Puno / Huacullani</td></tr>
+                <tr><th>Fuente</th><td><a href="https://www.facebook.com/photo?fbid=832961979771837&set=a.128560603545315">En Primera Plana</a> - 47 min</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>👤 Resumen del Perfil</h2>
+            <div class="bio-summary">
+                Candidato a diputado por el partido Progresemos en Puno. Anteriormente afiliado a Perú Libre. La publicación señala la ausencia de experiencia laboral registrada en la última década, falta de formación académica superior y declaraciones patrimoniales con inconsistencias.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Formación y Experiencia</h2>
+
+            <h3>🎓 Educación</h3>
+            <ul class="profile-list"><li>Educación Básica Regular - No especifica (No especifica)</li></ul>
+
+            <h3>💼 Experiencia Laboral</h3>
+            <p style="color: #65676b;">No especificado</p>
+        </div>
+
+        <div class="section">
+            <h2>💵 Declaraciones Económicas</h2>
+            <div class="cards-row">
+                <div class="info-card"><h4>💰 Ingresos</h4><p>No declarado</p></div>
+                <div class="info-card"><h4>🏠 Patrimonio</h4><p>No declarado</p></div>
+            </div>
+        </div>
+
+        <div class="section redflags">
+            <h2>⚠️ Análisis de Riesgo</h2>
+            <p style="margin-bottom: 15px;">
+                <strong>Score general:</strong>
+                <span style="background: #fff3e0; color: #f57c00; padding: 5px 12px; border-radius: 5px; font-weight: bold;">
+                    3.5 / 5
+                </span>
+            </p>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[afiliacion] Severidad: 3/5</span>
+                <div class="redflag-evidence">"Su tránsito de una agrupación nacional con fuerte presencia política hacia un partido recién inscrito refleja un cambio abrupto de lealtades que deja dudas sobre la solidez de sus convicciones."</div>
+                <div class="redflag-notes">Cambio de partido de Perú Libre a Progresemos en un corto período, cuestionando la consistencia política.</div>
+            </div>
+            
+            <div class="redflag-item high">
+                <span class="redflag-type">[experiencia_limitada] Severidad: 4/5</span>
+                <div class="redflag-evidence">"En el terreno laboral, Chambilla no registra experiencia en los últimos diez años, lo que refuerza la percepción de un candidato sin antecedentes profesionales claros en el sector público, privado o independiente."</div>
+                <div class="redflag-notes">Ausencia total de experiencia laboral registrada, lo que puede afectar su capacidad percibida para el cargo.</div>
+            </div>
+            
+            <div class="redflag-item high">
+                <span class="redflag-type">[patrimonio] Severidad: 4/5</span>
+                <div class="redflag-evidence">"Chambilla no reporta ingresos ni propiedades inmuebles, y en el rubro de bienes muebles consigna un vehículo con valor declarado de S/ 0, acompañado de la anotación 'no reconoce el vehículo'."</div>
+                <div class="redflag-notes">Declaración jurada con inconsistencias graves, específicamente un vehículo declarado con valor cero y no reconocido, lo que sugiere posible omisión o falsedad.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[inconsistencia] Severidad: 3/5</span>
+                <div class="redflag-evidence">"Su formación académica también es un vacío: no consigna estudios técnicos, universitarios ni de posgrado, limitándose a la educación básica regular concluida en primaria y secundaria."</div>
+                <div class="redflag-notes">Falta de formación académica superior declarada, lo que contrasta con los perfiles típicos de candidatos a cargos de elección popular.</div>
+            </div>
+            
+        </div>
+
+        
+            <div class="section sensitive">
+                <h3>⚠️ Información Sensible Detectada</h3>
+                <ul><li>1993</li><li>Huacullani, provincia de Chucuito, departamento de Puno</li></ul>
+            </div>
+            
+
+        <div class="section social-section">
+            <h2>📱 Redes Sociales (Llenado Manual)</h2>
+
+            <label>Facebook:</label>
+            <input type="text" placeholder="URL del perfil de Facebook" />
+
+            <label>Instagram:</label>
+            <input type="text" placeholder="@usuario" />
+
+            <label>TikTok:</label>
+            <input type="text" placeholder="@usuario" />
+
+            <label>WhatsApp:</label>
+            <input type="text" placeholder="Número de contacto" />
+
+            <label>Observaciones de actividad en redes:</label>
+            <textarea rows="3" placeholder="Notas sobre actividad, seguidores, tipo de contenido..."></textarea>
+
+            <label>Mapa de actividad (enlaces y hallazgos):</label>
+            <textarea rows="3" placeholder="Pegar enlaces relevantes encontrados..."></textarea>
+        </div>
+
+        <div class="footer">
+            <p>Ficha generada automáticamente | Scraping: 2026-02-02 15:37:50 | Post ID: 832961979771837</p>
+            <p>Candidate ID: 832961979771837_JoelChambillaMamani</p>
+        </div>
+    </div>
+</body>
+</html>

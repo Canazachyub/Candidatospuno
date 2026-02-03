@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Candidatos - Elecciones 2026</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #f8fafc;
+        }
+        .header p {
+            color: #94a3b8;
+            font-size: 16px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            background: #1e293b;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        .stat-label {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .stat.riesgo-alto .stat-number { color: #ef4444; }
+        .stat.riesgo-medio .stat-number { color: #f59e0b; }
+        .stat.riesgo-bajo .stat-number { color: #22c55e; }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            padding: 20px 30px;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-group label {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .filter-group select, .filter-group input {
+            background: #334155;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .table-container {
+            background: #1e293b;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: #334155;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #f8fafc;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+        }
+        th:hover {
+            background: #475569;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #334155;
+        }
+        tr:hover {
+            background: #334155;
+        }
+
+        .candidate-link {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .candidate-link:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-partido {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .risk-high {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+        .risk-medium {
+            background: #78350f;
+            color: #fcd34d;
+        }
+        .risk-low {
+            background: #14532d;
+            color: #86efac;
+        }
+
+        .bio-cell {
+            max-width: 300px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1200px) {
+            .table-container {
+                overflow-x: auto;
+            }
+            table {
+                min-width: 1000px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Dashboard de Candidatos - EG2026</h1>
+        <p>Análisis automatizado de perfiles políticos • Última actualización: 02/02/2026 18:48</p>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat">
+            <div class="stat-number">59</div>
+            <div class="stat-label">Total Candidatos</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">27</div>
+            <div class="stat-label">Partidos</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">1</div>
+            <div class="stat-label">Regiones</div>
+        </div>
+        <div class="stat riesgo-alto">
+            <div class="stat-number">7</div>
+            <div class="stat-label">Riesgo Alto</div>
+        </div>
+        <div class="stat riesgo-medio">
+            <div class="stat-number">50</div>
+            <div class="stat-label">Riesgo Medio</div>
+        </div>
+        <div class="stat riesgo-bajo">
+            <div class="stat-number">2</div>
+            <div class="stat-label">Riesgo Bajo</div>
+        </div>
+    </div>
+
+    <div class="filters">
+        <div class="filter-group">
+            <label>🔍 Buscar:</label>
+            <input type="text" id="searchInput" placeholder="Nombre del candidato..." />
+        </div>
+        <div class="filter-group">
+            <label>🏛️ Partido:</label>
+            <select id="filterPartido">
+                <option value="">Todos los partidos</option>
+                <option value="AHORA NACION – AN">AHORA NACION – AN (2)</option><option value="Ahora Nación – AN">Ahora Nación – AN (3)</option><option value="Alianza Electoral Venceremos">Alianza Electoral Venceremos (4)</option><option value="Alianza Para el Progreso">Alianza Para el Progreso (3)</option><option value="Avanza País – Partido de Integración Social">Avanza País – Partido de Integración Social (3)</option><option value="Cooperación Popular">Cooperación Popular (1)</option><option value="Frente Popular Agrícola FIA del Perú (FREPAP)">Frente Popular Agrícola FIA del Perú (FREPAP) (1)</option><option value="Frente de la Esperanza 2021">Frente de la Esperanza 2021 (1)</option><option value="Fuerza Popular">Fuerza Popular (1)</option><option value="Juntos por el Perú">Juntos por el Perú (4)</option><option value="Libertad Popular">Libertad Popular (1)</option><option value="PODEMOS PERÚ">PODEMOS PERÚ (2)</option><option value="PRIN">PRIN (1)</option><option value="PROGRESEMOS">PROGRESEMOS (2)</option><option value="Partido Democrático Federal">Partido Democrático Federal (3)</option><option value="Partido Democrático Somos Perú">Partido Democrático Somos Perú (1)</option><option value="Partido Demócrata Unido Perú">Partido Demócrata Unido Perú (3)</option><option value="Partido Demócrata Verde">Partido Demócrata Verde (3)</option><option value="Partido Político Cooperación Popular">Partido Político Cooperación Popular (2)</option><option value="Partido Político Nacional Perú Libre">Partido Político Nacional Perú Libre (2)</option><option value="Partido Político Perú Primero">Partido Político Perú Primero (4)</option><option value="Partido del Buen Gobierno">Partido del Buen Gobierno (1)</option><option value="Perú Libre">Perú Libre (1)</option><option value="Perú Moderno">Perú Moderno (1)</option><option value="Podemos Perú">Podemos Perú (3)</option><option value="Progresemos">Progresemos (1)</option><option value="Renovación Popular">Renovación Popular (5)</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>📍 Región:</label>
+            <select id="filterRegion">
+                <option value="">Todas las regiones</option>
+                <option value="Puno">Puno (59)</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>⚠️ Riesgo:</label>
+            <select id="filterRiesgo">
+                <option value="">Todos los niveles</option>
+                <option value="high">Alto (4-5)</option>
+                <option value="medium">Medio (2-3)</option>
+                <option value="low">Bajo (0-1)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="table-container">
+            <table id="candidatesTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Nombre ▼</th>
+                        <th onclick="sortTable(1)">Partido</th>
+                        <th onclick="sortTable(2)">Cargo</th>
+                        <th onclick="sortTable(3)">Región</th>
+                        <th onclick="sortTable(4)">Ciudad</th>
+                        <th onclick="sortTable(5)">Riesgo</th>
+                        <th>Resumen</th>
+                        <th onclick="sortTable(7)">Flags</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    
+            <tr class="candidate-row" data-partido="Partido Demócrata Verde" data-region="Puno" data-riesgo="high">
+                <td>
+                    <a href="fichas/2026-02-02_824464350621600/index.html" class="candidate-link">
+                        Maruja Inquilla Sucasaca
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Demócrata Verde</span></td>
+                <td>Senadora y Primer Vicepresidente de la República</td>
+                <td>Puno</td>
+                <td>Coata</td>
+                <td><span class="risk-badge risk-high">4/5</span></td>
+                <td class="bio-cell">Candidata del Partido Demócrata Verde para Senadora en circunscripción única nacional y Primer Vicep...</td>
+                <td>5</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Renovación Popular" data-region="Puno" data-riesgo="high">
+                <td>
+                    <a href="fichas/2026-02-02_825014313899937/index.html" class="candidate-link">
+                        Mao Tsetung Machaca Avilés
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Renovación Popular</span></td>
+                <td>senador</td>
+                <td>Puno</td>
+                <td>Lampa</td>
+                <td><span class="risk-badge risk-high">4/5</span></td>
+                <td class="bio-cell">Candidato al Senado por Renovación Popular en Puno. Posee formación académica en Comunicación Social...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Perú Moderno" data-region="Puno" data-riesgo="high">
+                <td>
+                    <a href="fichas/2026-02-02_828379176896784/index.html" class="candidate-link">
+                        Juan Luque Mamani
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Perú Moderno</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Azángaro</td>
+                <td><span class="risk-badge risk-high">4/5</span></td>
+                <td class="bio-cell">Candidato a diputado por Perú Moderno en Puno. Posee una extensa trayectoria académica y ha ocupado ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="PROGRESEMOS" data-region="Puno" data-riesgo="high">
+                <td>
+                    <a href="fichas/2026-02-02_828379926896709/index.html" class="candidate-link">
+                        Dino Pastor Chambi Quispe
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">PROGRESEMOS</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Acora</td>
+                <td><span class="risk-badge risk-high">4/5</span></td>
+                <td class="bio-cell">Candidato a diputado por el partido PROGRESEMOS, nacido en Acora, Puno, en 1987 y con residencia act...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Demócrata Unido Perú" data-region="Puno" data-riesgo="high">
+                <td>
+                    <a href="fichas/2026-02-02_828474900220545/index.html" class="candidate-link">
+                        Valeriano Yucra Yucra
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Demócrata Unido Perú</span></td>
+                <td>senador</td>
+                <td>Puno</td>
+                <td>Taraco</td>
+                <td><span class="risk-badge risk-high">4/5</span></td>
+                <td class="bio-cell">Candidato de 53 años al Senado por Puno, postulado por el Partido Demócrata Unido Perú. Su perfil se...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido del Buen Gobierno" data-region="Puno" data-riesgo="high">
+                <td>
+                    <a href="fichas/2026-02-02_828478446886857/index.html" class="candidate-link">
+                        Dometila Cutipa Copa
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido del Buen Gobierno</span></td>
+                <td>senadora</td>
+                <td>Puno</td>
+                <td>Achaya, provincia de Azángaro</td>
+                <td><span class="risk-badge risk-high">4/5</span></td>
+                <td class="bio-cell">Candidata a senadora por Puno del Partido del Buen Gobierno. Afiliada al partido en octubre de 2024,...</td>
+                <td>5</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Político Nacional Perú Libre" data-region="Puno" data-riesgo="high">
+                <td>
+                    <a href="fichas/2026-02-02_830598313341537/index.html" class="candidate-link">
+                        Rubén Alemán Gonzales
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Político Nacional Perú Libre</span></td>
+                <td>senador</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-high">4/5</span></td>
+                <td class="bio-cell">Candidato al Senado por Puno por Perú Libre. Tiene una trayectoria laboral variada en el sector públ...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Avanza País – Partido de Integración Social" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824165637318138/index.html" class="candidate-link">
+                        Jorge Luis Ruelas Mamani
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Avanza País – Partido de Integración Social</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Antauta</td>
+                <td><span class="risk-badge risk-medium">3.5/5</span></td>
+                <td class="bio-cell">Candidato a diputado por Puno por Avanza País. Joven de 32 años, nacido en Antauta, con formación un...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Político Cooperación Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_829048423496526/index.html" class="candidate-link">
+                        Óscar Gonzales Huamán
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Político Cooperación Popular</span></td>
+                <td>No especifica</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3.5/5</span></td>
+                <td class="bio-cell">Candidato político de Puno con perfil empresarial y formación en Derecho y Administración. Su trayec...</td>
+                <td>2</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Avanza País – Partido de Integración Social" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832941079773927/index.html" class="candidate-link">
+                        Alex Salvador López Paredes
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Avanza País – Partido de Integración Social</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3.5/5</span></td>
+                <td class="bio-cell">Candidato a diputado por Avanza País – Partido de Integración Social, nacido en Juliaca, Puno, en 19...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Demócrata Unido Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832958423105526/index.html" class="candidate-link">
+                        Yessica Callata Quispe
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Demócrata Unido Perú</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Taraco</td>
+                <td><span class="risk-badge risk-medium">3.5/5</span></td>
+                <td class="bio-cell">Candidata joven a diputada por el Partido Demócrata Unido Perú en Puno. Nacida en Taraco en 1997, po...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Progresemos" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832961979771837/index.html" class="candidate-link">
+                        Joel Chambilla Mamani
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Progresemos</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Huacullani</td>
+                <td><span class="risk-badge risk-medium">3.5/5</span></td>
+                <td class="bio-cell">Candidato a diputado por el partido Progresemos en Puno. Anteriormente afiliado a Perú Libre. La pub...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Político Perú Primero" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832966229771412/index.html" class="candidate-link">
+                        Cecilia Magaly Mendoza Castillo
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Político Perú Primero</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Puno</td>
+                <td><span class="risk-badge risk-medium">3.3/5</span></td>
+                <td class="bio-cell">Candidata a diputada por el Partido Político Perú Primero en Puno. Declara ingresos bajos como profe...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Avanza País – Partido de Integración Social" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824161550651880/index.html" class="candidate-link">
+                        Nilda Yaneth Suca Apaza
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Avanza País – Partido de Integración Social</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Huancané</td>
+                <td><span class="risk-badge risk-medium">3.25/5</span></td>
+                <td class="bio-cell">Candidata al Congreso por Puno para Avanza País – Partido de Integración Social. Es Licenciada en En...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Frente de la Esperanza 2021" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824187947315907/index.html" class="candidate-link">
+                        Yesica Quispe Condori
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Frente de la Esperanza 2021</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Ocuviri, provincia de Lampa</td>
+                <td><span class="risk-badge risk-medium">3.25/5</span></td>
+                <td class="bio-cell">Candidata a diputada por el Frente de la Esperanza 2021 en Puno. Joven profesional con formación en ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Libertad Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832949906439711/index.html" class="candidate-link">
+                        Isabel Roxana Parisaca Chávez
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Libertad Popular</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Puno</td>
+                <td><span class="risk-badge risk-medium">3.25/5</span></td>
+                <td class="bio-cell">Candidata a diputada por Puno por Libertad Popular. Tiene formación diversa en obstetricia, administ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Frente Popular Agrícola FIA del Perú (FREPAP)" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_823642897370412/index.html" class="candidate-link">
+                        Sara Ana Luque Pérez
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Frente Popular Agrícola FIA del Perú (FREPAP)</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3.2/5</span></td>
+                <td class="bio-cell">Candidata joven de 30 años (nacida en 1995) postulando a diputada por FREPAP en Puno. Combina formac...</td>
+                <td>6</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Renovación Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_823626827372019/index.html" class="candidate-link">
+                        Sheila Estrella Angles Canlla
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Renovación Popular</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Puno</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Abogada independiente con formación académica avanzada (doctora en Derecho) y candidata a diputada p...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Renovación Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_823628934038475/index.html" class="candidate-link">
+                        Wilbert Ivan Arosquipa Ibañez
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Renovación Popular</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato a diputado por Renovación Popular en Puno, nacido en Juliaca en 1970. Presenta historial d...</td>
+                <td>5</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="PODEMOS PERÚ" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824214237313278/index.html" class="candidate-link">
+                        Saulo Nicolás Apaza Quispe
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">PODEMOS PERÚ</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato a diputado por Puno por PODEMOS PERÚ. Tiene experiencia laboral en cargos administrativos ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Podemos Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824288093972559/index.html" class="candidate-link">
+                        Renee Alberto Flores Apaza
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Podemos Perú</span></td>
+                <td>senador</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato al Senado por Puno, afiliado a Podemos Perú. Profesor de educación física con más de dos d...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Renovación Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824452840622751/index.html" class="candidate-link">
+                        Estanislao Edgar Mancha Pineda
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Renovación Popular</span></td>
+                <td>Senador</td>
+                <td>Puno</td>
+                <td>San Antón, provincia de Azángaro</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato de 52 años al Senado por Renovación Popular. Posee una sólida trayectoria académica como d...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Democrático Somos Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_826902780377757/index.html" class="candidate-link">
+                        Jhomira Noheli Jiménez Jalire
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Democrático Somos Perú</span></td>
+                <td>No especifica</td>
+                <td>Puno</td>
+                <td>Tacna</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Joven comerciante independiente de Tacna, nacida en 1996, postulando para representar a la región de...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Ahora Nación – AN" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_826927387041963/index.html" class="candidate-link">
+                        Jorge Enrique Sotomayor Perales
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Ahora Nación – AN</span></td>
+                <td>senador</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Médico cirujano de Juliaca, Puno, con especializaciones en Medicina Interna y Medicina Intensiva. Ca...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Juntos por el Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828154583585910/index.html" class="candidate-link">
+                        Sammy Yessica Checa Amanqui
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Juntos por el Perú</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidata a diputada por Puno por Juntos por el Perú. Nacida en 1995 en Juliaca, su trayectoria polí...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Juntos por el Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828158713585497/index.html" class="candidate-link">
+                        Henry Calizaya Mamani
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Juntos por el Perú</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato a diputado por Puno por Juntos por el Perú. Nacido en Juliaca, es profesor de primaria y a...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="PROGRESEMOS" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828343240233711/index.html" class="candidate-link">
+                        Senilda Yana Luque
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">PROGRESEMOS</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Quilcapuncu, provincia de San Antonio de Putina</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidata a diputada por el partido PROGRESEMOS en Puno. Joven de 29 años, nacida en Quilcapuncu, pr...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Cooperación Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828378470230188/index.html" class="candidate-link">
+                        Milagros Shantall Samillán Sanga
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Cooperación Popular</span></td>
+                <td>Congresista</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidata de 30 años por Cooperación Popular al Congreso por Puno. Es presentada como una figura nue...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Podemos Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828379280230107/index.html" class="candidate-link">
+                        Presentación Flora Zela Maraza
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Podemos Perú</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidata a diputada por Podemos Perú en Puno. Comerciante independiente de Juliaca con formación un...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Alianza Electoral Venceremos" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828424483558920/index.html" class="candidate-link">
+                        Alberto Eugenio Quintanilla Chacón
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Alianza Electoral Venceremos</span></td>
+                <td>Segundo vicepresidente de la República y diputado por Puno</td>
+                <td>Puno</td>
+                <td>No especifica</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato de izquierda con una larga trayectoria política y una sólida formación académica en derech...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Alianza Electoral Venceremos" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828428126891889/index.html" class="candidate-link">
+                        Luis Felipe Quispe Yana
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Alianza Electoral Venceremos</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato joven de 32 años, nacido en Juliaca, Puno. Se postula a diputado por la Alianza Electoral ...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="PRIN" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828464163554952/index.html" class="candidate-link">
+                        Ángel Gumercindo Huanca Yampara
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">PRIN</span></td>
+                <td>Senador</td>
+                <td>Puno</td>
+                <td>San Juan del Oro</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Abogado titulado por la Universidad Nacional del Altiplano, afiliado al partido PRIN desde enero de ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Fuerza Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_831673683234000/index.html" class="candidate-link">
+                        Manuela Vela Rengifo
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Fuerza Popular</span></td>
+                <td>senadora</td>
+                <td>Puno</td>
+                <td>No especifica</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidata al Senado por Fuerza Popular en Puno. Su perfil se caracteriza por una trayectoria laboral...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Demócrata Unido Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832954293105939/index.html" class="candidate-link">
+                        Tomas Paccara Huaricallo
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Demócrata Unido Perú</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Caminaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato a diputado por Puno del Partido Demócrata Unido Perú. Nacido en Caminaca en 1974, tiene fo...</td>
+                <td>5</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Democrático Federal" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832976476437054/index.html" class="candidate-link">
+                        Rossmery Marlít Chino Huamán
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Democrático Federal</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Ayaviri</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidata a diputada por el Partido Democrático Federal en Puno. Es una profesional de la salud, bac...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Democrático Federal" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832985056436196/index.html" class="candidate-link">
+                        Andrea Estefany Chuquitarqui Puma
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Democrático Federal</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidata joven a diputada por el Partido Democrático Federal en Puno. Es una figura emergente sin a...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Democrático Federal" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_832988496435852/index.html" class="candidate-link">
+                        José Antonio Portada Colquehuanca
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Democrático Federal</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Cojata</td>
+                <td><span class="risk-badge risk-medium">3/5</span></td>
+                <td class="bio-cell">Candidato a diputado por el Partido Democrático Federal en Puno. Ingeniero civil con experiencia en ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="PODEMOS PERÚ" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824215630646472/index.html" class="candidate-link">
+                        Stefany Nereyda Machaca Quispe
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">PODEMOS PERÚ</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">2.75/5</span></td>
+                <td class="bio-cell">Candidata a diputada por Puno de 26 años para las elecciones de 2026 por el partido PODEMOS PERÚ. Su...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Perú Libre" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824472090620826/index.html" class="candidate-link">
+                        Flavio Cruz Mamani
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Perú Libre</span></td>
+                <td>Primer Vicepresidente de la República y Senador</td>
+                <td>Puno</td>
+                <td>Puno</td>
+                <td><span class="risk-badge risk-medium">2.75/5</span></td>
+                <td class="bio-cell">Congresista por Perú Libre desde 2021, con una extensa trayectoria en el ámbito público y educativo ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Político Perú Primero" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_914760347775960/index.html" class="candidate-link">
+                        Luz María Hancco Suca
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Político Perú Primero</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Ayaviri</td>
+                <td><span class="risk-badge risk-medium">2.7/5</span></td>
+                <td class="bio-cell">Candidata de 26 años, técnica en enfermería, postula como diputada por Puno por el partido Perú Prim...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Juntos por el Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828149720253063/index.html" class="candidate-link">
+                        Jessica Sadith Pérez Quispe
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Juntos por el Perú</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Puno</td>
+                <td><span class="risk-badge risk-medium">2.6/5</span></td>
+                <td class="bio-cell">Candidata a diputada por Puno por Juntos por el Perú. Profesional con formación en contaduría y dere...</td>
+                <td>5</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Renovación Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_823623737372328/index.html" class="candidate-link">
+                        Lucia Edita Betshy Orihuela Pasaca
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Renovación Popular</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">2.5/5</span></td>
+                <td class="bio-cell">Candidata a diputada por Renovación Popular en Puno. Joven profesional de 26 años, contadora de form...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Podemos Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824216693979699/index.html" class="candidate-link">
+                        Liu Gabriel Monge Fonseca
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Podemos Perú</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">2.5/5</span></td>
+                <td class="bio-cell">Joven candidato a diputado por Puno por Podemos Perú. Posee formación académica sólida en economía y...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Político Nacional Perú Libre" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824292597305442/index.html" class="candidate-link">
+                        Marilú Zulema Yanarico Apaza
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Político Nacional Perú Libre</span></td>
+                <td>senadora</td>
+                <td>Puno</td>
+                <td>Moho</td>
+                <td><span class="risk-badge risk-medium">2.5/5</span></td>
+                <td class="bio-cell">Candidata al Senado por Puno, afiliada a Perú Libre. Combina una trayectoria laboral en el comercio ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Juntos por el Perú" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_828143800253655/index.html" class="candidate-link">
+                        César Hugo Tito Rojas
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Juntos por el Perú</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Puno</td>
+                <td><span class="risk-badge risk-medium">2.5/5</span></td>
+                <td class="bio-cell">Candidato a diputado por Juntos por el Perú en Puno. Docente con más de tres décadas de experiencia ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Ahora Nación – AN" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_914762927775702/index.html" class="candidate-link">
+                        Karim Mavel Castro Quilly
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Ahora Nación – AN</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Ayaviri</td>
+                <td><span class="risk-badge risk-medium">2.5/5</span></td>
+                <td class="bio-cell">Candidata a diputada por Puno del partido Ahora Nación – AN. Es obstetra con más de 15 años de exper...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="AHORA NACION – AN" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824155063985862/index.html" class="candidate-link">
+                        Mirella Shirley Camapaza Quispe
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">AHORA NACION – AN</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Ilave</td>
+                <td><span class="risk-badge risk-medium">2.4/5</span></td>
+                <td class="bio-cell">Abogada y contadora pública, candidata a diputada por AHORA NACION – AN por Puno. Cuenta con experie...</td>
+                <td>5</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Político Cooperación Popular" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_826957633705605/index.html" class="candidate-link">
+                        Juana Gonzalo Choque
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Político Cooperación Popular</span></td>
+                <td>senadora</td>
+                <td>Puno</td>
+                <td>Pomata</td>
+                <td><span class="risk-badge risk-medium">2.4/5</span></td>
+                <td class="bio-cell">Candidata a senadora por Puno, postulada por el Partido Político Cooperación Popular. Nacida y resid...</td>
+                <td>5</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Alianza Electoral Venceremos" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_914756484443013/index.html" class="candidate-link">
+                        Adelma Quispe Condori
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Alianza Electoral Venceremos</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Santa Rosa</td>
+                <td><span class="risk-badge risk-medium">2.4/5</span></td>
+                <td class="bio-cell">Candidata a diputada por la Alianza Electoral Venceremos en Puno, con un perfil discreto y origen en...</td>
+                <td>5</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Alianza Electoral Venceremos" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_823652194036149/index.html" class="candidate-link">
+                        Adelma Quispe Condori
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Alianza Electoral Venceremos</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Santa Rosa</td>
+                <td><span class="risk-badge risk-medium">2.25/5</span></td>
+                <td class="bio-cell">Candidata a diputada por la Alianza Electoral Venceremos en Puno, de 48 años, nacida en Santa Rosa. ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Alianza Para el Progreso" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_823654204035948/index.html" class="candidate-link">
+                        Irene Carcausto Huanca
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Alianza Para el Progreso</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Azángaro</td>
+                <td><span class="risk-badge risk-medium">2/5</span></td>
+                <td class="bio-cell">Candidata a diputada por Alianza Para el Progreso en Puno. Docente de educación primaria con más de ...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="AHORA NACION – AN" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824160107318691/index.html" class="candidate-link">
+                        Lady Rosmery Ccopa Acrota
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">AHORA NACION – AN</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">2/5</span></td>
+                <td class="bio-cell">Candidata de 26 años a diputada por Puno, afiliada a AHORA NACION – AN. Posee formación universitari...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Político Perú Primero" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824211390646896/index.html" class="candidate-link">
+                        Luz María Hancco Suca
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Político Perú Primero</span></td>
+                <td>diputada</td>
+                <td>Puno</td>
+                <td>Ayaviri</td>
+                <td><span class="risk-badge risk-medium">2/5</span></td>
+                <td class="bio-cell">Candidata de 26 años, técnica en enfermería, postula como diputada por Puno para el Partido Político...</td>
+                <td>4</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Alianza Para el Progreso" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_824306093970759/index.html" class="candidate-link">
+                        Walter Guido Chambi Quispe
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Alianza Para el Progreso</span></td>
+                <td>senador</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-medium">2/5</span></td>
+                <td class="bio-cell">Candidato al Senado por Puno, afiliado a Alianza Para el Progreso. Su carrera se ha desarrollado pri...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Demócrata Verde" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_826910640376971/index.html" class="candidate-link">
+                        Octavio Eliseo Palero Calloapaza
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Demócrata Verde</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Sandia</td>
+                <td><span class="risk-badge risk-medium">2/5</span></td>
+                <td class="bio-cell">Ingeniero civil independiente de Sandia, Puno, con perfil técnico y patrimonio limitado. Candidato a...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Ahora Nación – AN" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_826923913708977/index.html" class="candidate-link">
+                        Alejandrina Quispe Poma
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Ahora Nación – AN</span></td>
+                <td>senadora</td>
+                <td>Puno</td>
+                <td>Moho</td>
+                <td><span class="risk-badge risk-medium">2/5</span></td>
+                <td class="bio-cell">Candidata al Senado por Puno con el partido Ahora Nación – AN. Funcionaria administrativa en el sect...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Político Perú Primero" data-region="Puno" data-riesgo="medium">
+                <td>
+                    <a href="fichas/2026-02-02_914775664441095/index.html" class="candidate-link">
+                        Omar Condori Cuno
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Político Perú Primero</span></td>
+                <td>Congreso de la República</td>
+                <td>Puno</td>
+                <td>Umachiri</td>
+                <td><span class="risk-badge risk-medium">2/5</span></td>
+                <td class="bio-cell">Candidato al Congreso por Perú Primero, representando a Puno. Ingeniero Agroindustrial con experienc...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Alianza Para el Progreso" data-region="Puno" data-riesgo="low">
+                <td>
+                    <a href="fichas/2026-02-02_823647867369915/index.html" class="candidate-link">
+                        José Sucacahua Lipa
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Alianza Para el Progreso</span></td>
+                <td>diputado</td>
+                <td>Puno</td>
+                <td>Juliaca</td>
+                <td><span class="risk-badge risk-low">1.7/5</span></td>
+                <td class="bio-cell">Abogado de Juliaca, Puno, con experiencia en el sector privado como director de su propio estudio ju...</td>
+                <td>3</td>
+            </tr>
+            
+            <tr class="candidate-row" data-partido="Partido Demócrata Verde" data-region="Puno" data-riesgo="low">
+                <td>
+                    <a href="fichas/2026-02-02_826917247042977/index.html" class="candidate-link">
+                        Denilson Medina Sánchez
+                    </a>
+                </td>
+                <td><span class="badge badge-partido">Partido Demócrata Verde</span></td>
+                <td>No especifica</td>
+                <td>Puno</td>
+                <td>Puno</td>
+                <td><span class="risk-badge risk-low">1.3/5</span></td>
+                <td class="bio-cell">Abogado puneño nacido en 1970, con arraigo territorial en la ciudad de Puno. Combina experiencia doc...</td>
+                <td>3</td>
+            </tr>
+            
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Dashboard generado automáticamente con DeepSeek AI</p>
+        <p>Total de candidatos analizados: 59 | Partidos: 27 | Regiones: 1</p>
+    </div>
+
+    <script>
+        // Filtros
+        const searchInput = document.getElementById('searchInput');
+        const filterPartido = document.getElementById('filterPartido');
+        const filterRegion = document.getElementById('filterRegion');
+        const filterRiesgo = document.getElementById('filterRiesgo');
+        const rows = document.querySelectorAll('.candidate-row');
+
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const partido = filterPartido.value;
+            const region = filterRegion.value;
+            const riesgo = filterRiesgo.value;
+
+            rows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const rowPartido = row.dataset.partido;
+                const rowRegion = row.dataset.region;
+                const rowRiesgo = row.dataset.riesgo;
+
+                const matchSearch = name.includes(searchTerm);
+                const matchPartido = !partido || rowPartido === partido;
+                const matchRegion = !region || rowRegion === region;
+                const matchRiesgo = !riesgo || rowRiesgo === riesgo;
+
+                if (matchSearch && matchPartido && matchRegion && matchRiesgo) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', applyFilters);
+        filterPartido.addEventListener('change', applyFilters);
+        filterRegion.addEventListener('change', applyFilters);
+        filterRiesgo.addEventListener('change', applyFilters);
+
+        // Ordenamiento de tabla
+        let sortDirection = {};
+        function sortTable(columnIndex) {
+            const table = document.getElementById('candidatesTable');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            sortDirection[columnIndex] = !sortDirection[columnIndex];
+            const dir = sortDirection[columnIndex] ? 1 : -1;
+
+            rows.sort((a, b) => {
+                let aVal = a.cells[columnIndex].textContent.trim();
+                let bVal = b.cells[columnIndex].textContent.trim();
+
+                // Para columna de riesgo, ordenar numéricamente
+                if (columnIndex === 5) {
+                    aVal = parseInt(aVal) || 0;
+                    bVal = parseInt(bVal) || 0;
+                    return (aVal - bVal) * dir;
+                }
+
+                // Para flags, ordenar numéricamente
+                if (columnIndex === 7) {
+                    aVal = parseInt(aVal) || 0;
+                    bVal = parseInt(bVal) || 0;
+                    return (aVal - bVal) * dir;
+                }
+
+                return aVal.localeCompare(bVal) * dir;
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
+</body>
+</html>

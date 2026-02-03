@@ -1,0 +1,65 @@
+# ============================================
+# URLS DE PUBLICACIONES DE FACEBOOK
+# ============================================
+# URLs ya procesadas (comentadas):
+# https://www.facebook.com/photo?fbid=824306093970759&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=828343240233711&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=829048423496526&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=824464350621600&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=825014313899937&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=823654204035948&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=824187947315907&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=830598313341537&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=824211390646896&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=824161550651880&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=823623737372328&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=824292597305442&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=828143800253655&set=a.128560603545315
+# https://www.facebook.com/photo/?fbid=824155063985862&set=a.128560603545315
+# https://www.facebook.com/photo?fbid=824160107318691&set=a.128560603545315
+
+# URLs PENDIENTES (44 restantes):
+https://www.facebook.com/photo/?fbid=824216693979699&set=a.128560603545315
+https://www.facebook.com/photo?fbid=824215630646472&set=a.128560603545315
+https://www.facebook.com/photo?fbid=828149720253063&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=823642897370412&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=914760347775960&set=gm.2970295689837100&idorvanity=647142655485760
+https://www.facebook.com/photo?fbid=823628934038475&set=a.128560603545315
+https://www.facebook.com/photo?fbid=824214237313278&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832988496435852&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=828158713585497&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832961979771837&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832985056436196&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=824472090620826&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=823647867369915&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=828379926896709&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=826910640376971&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=826917247042977&set=a.128560603545315
+https://www.facebook.com/photo?fbid=823652194036149&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=828474900220545&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=828379176896784&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=824165637318138&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=826957633705605&set=a.128560603545315
+https://www.facebook.com/photo?fbid=828428126891889&set=a.128560603545315
+https://www.facebook.com/photo/?fbid=914762927775702&set=a.185648270687175
+https://www.facebook.com/photo/?fbid=914775664441095&set=gm.25582959734692365&idorvanity=1590285577719783
+https://www.facebook.com/photo?fbid=828379280230107&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832949906439711&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832954293105939&set=a.128560603545315
+https://www.facebook.com/photo?fbid=824452840622751&set=a.128560603545315
+https://www.facebook.com/photo?fbid=831673683234000&set=a.128560603545315
+https://www.facebook.com/photo?fbid=826927387041963&set=a.128560603545315
+https://www.facebook.com/photo?fbid=826923913708977&set=a.128560603545315
+https://www.facebook.com/photo?fbid=824288093972559&set=a.128560603545315
+https://www.facebook.com/photo?fbid=828464163554952&set=a.128560603545315
+https://www.facebook.com/photo?fbid=828478446886857&set=a.128560603545315
+https://www.facebook.com/photo?fbid=828424483558920&set=a.128560603545315
+https://www.facebook.com/photo?fbid=828154583585910&set=a.128560603545315
+https://www.facebook.com/photo?fbid=828378470230188&set=a.128560603545315
+https://www.facebook.com/photo?fbid=914756484443013&set=a.185648270687175
+https://www.facebook.com/photo?fbid=823626827372019&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832941079773927&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832966229771412&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832958423105526&set=a.128560603545315
+https://www.facebook.com/photo?fbid=832976476437054&set=a.128560603545315
+https://www.facebook.com/photo?fbid=826902780377757&set=a.128560603545315

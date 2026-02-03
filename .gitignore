@@ -1,0 +1,42 @@
+# Archivos sensibles
+.env
+credentials.json
+secrets.json
+
+# Carpetas de salida (output/ contiene datos de scraping, no subir)
+output/
+logs/
+
+# IMPORTANTE: docs/ NO se ignora - contiene el sitio para GitHub Pages
+# docs/ se genera con: python src/deploy_preparer.py
+
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
+desktop.ini
+
+# Temporales
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# Sesiones de navegador (Selenium)
+profile_data/

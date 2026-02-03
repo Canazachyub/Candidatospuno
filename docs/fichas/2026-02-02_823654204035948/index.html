@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irene Carcausto Huanca - Ficha Electoral</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+        .header img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        .header-info { flex: 1; }
+        .header-info h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .chip-party { background: #ff5722; }
+        .chip-region { background: #4caf50; }
+        .chip-role { background: #2196f3; }
+        .source-link {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .source-link:hover { color: white; }
+
+        /* Risk Badge */
+        .risk-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .header { position: relative; }
+
+        /* Sections */
+        .section {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .section:last-child { border-bottom: none; }
+        .section h2 {
+            color: #1a237e;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .section h3 {
+            color: #424242;
+            font-size: 15px;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Table */
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .info-table th {
+            background: #f8f9fa;
+            color: #65676b;
+            font-weight: 600;
+            width: 30%;
+        }
+
+        /* Lists */
+        .profile-list { list-style: none; }
+        .profile-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+            padding-left: 20px;
+            position: relative;
+        }
+        .profile-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #1a237e;
+        }
+        .profile-list li:last-child { border-bottom: none; }
+
+        /* Info Cards */
+        .cards-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            flex: 1;
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #1a237e;
+        }
+        .info-card h4 {
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .info-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1c1e21;
+        }
+        .info-card .detail {
+            color: #65676b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* Red Flags */
+        .redflags { background: #fff8e1; }
+        .redflag-item {
+            background: white;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .redflag-item.high { border-left-color: #f44336; background: #ffebee; }
+        .redflag-item.medium { border-left-color: #ff9800; }
+        .redflag-type {
+            font-weight: bold;
+            color: #f57c00;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .redflag-item.high .redflag-type { color: #c62828; }
+        .redflag-evidence {
+            font-style: italic;
+            color: #65676b;
+            margin: 8px 0;
+            font-size: 13px;
+            padding: 10px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 5px;
+        }
+        .redflag-notes { font-size: 14px; }
+
+        /* Sensitive */
+        .sensitive { background: #fce4ec; }
+        .sensitive h3 { color: #c62828; }
+        .sensitive ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .sensitive li {
+            padding: 8px 12px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        /* Social Section */
+        .social-section input, .social-section textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .social-section input:focus, .social-section textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+        }
+        .social-section label {
+            font-weight: 600;
+            color: #424242;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #65676b;
+            font-size: 12px;
+        }
+        .footer a { color: #1a237e; }
+
+        /* Bio Summary */
+        .bio-summary {
+            background: #e8eaf6;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; text-align: center; }
+            .header img { margin: 0 auto; }
+            .chips { justify-content: center; }
+            .cards-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="imagen.jpg"
+                 alt="Foto del candidato"
+                 onerror="this.src='https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/617582072_823654210702614_7593455579286015347_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeG3lvhG9AbEWZqBU74IO9QBJHjRko1zFRwkeNGSjXMVHBP2B4iiGsz9J5mmhZX0E2hwC0G047dx2aM3PtiFtmSa&_nc_ohc=6eKs0KpATwMQ7kNvwG_91-a&_nc_oc=AdlCuey2fn5yZhKpmxwClL42WKNLWqp81Mw0o08XCm8Eg7S0-Cf4GkeFcfLYzwIKKyc&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=RMzpOoxsiRCHS7kvls3tag&oh=00_Afuj6HxOmTZfPXecGay1XFe2f-2hQmDyRH2zqikdrnvGHg&oe=6986C2F1'" />
+            <div class="header-info">
+                <h1>Irene Carcausto Huanca</h1>
+                <div class="chips">
+                    <span class="chip chip-party">Alianza Para el Progreso</span>
+                    <span class="chip chip-region">Puno</span>
+                    <span class="chip chip-role">diputada</span>
+                </div>
+                <a href="https://www.facebook.com/photo/?fbid=823654204035948&set=a.128560603545315" target="_blank" class="source-link">
+                    📎 Ver publicación original en Facebook →
+                </a>
+            </div>
+            <div class="risk-badge">
+                Riesgo: 2/5
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Información General</h2>
+            <table class="info-table">
+                <tr><th>Nombre completo</th><td>Irene Carcausto Huanca</td></tr>
+                <tr><th>Partido político</th><td>Alianza Para el Progreso</td></tr>
+                <tr><th>Cargo al que postula</th><td>diputada</td></tr>
+                <tr><th>Región / Ciudad</th><td>Puno / Azángaro</td></tr>
+                <tr><th>Fuente</th><td><a href="https://www.facebook.com/photo/?fbid=823654204035948&set=a.128560603545315">Pedro Vaca</a> - 02 de February de 2026</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>👤 Resumen del Perfil</h2>
+            <div class="bio-summary">
+                Candidata a diputada por Alianza Para el Progreso en Puno. Docente de educación primaria con más de una década de experiencia y ex congresista (2020-2021). Posee un patrimonio inmobiliario significativo y una trayectoria política con afiliaciones previas a otros partidos.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Formación y Experiencia</h2>
+
+            <h3>🎓 Educación</h3>
+            <ul class="profile-list"><li>Profesora de educación primaria (estudios técnicos) - Azángaro (None)</li><li>Bachiller en Educación - Universidad Nacional Federico Villarreal (2007)</li><li>Maestría en Lingüística Andina y Educación (egresada) - Universidad Nacional del Altiplano de Puno (None)</li></ul>
+
+            <h3>💼 Experiencia Laboral</h3>
+            <ul class="profile-list"><li>Institución Educativa Primaria N° 72640, centro poblado Tuturcuyo | ['Docente', 'Profesora nombrada'] (Más de una década (actualmente))</li><li>Congreso de la República | ['Congresista'] (2020-2021)</li></ul>
+        </div>
+
+        <div class="section">
+            <h2>💵 Declaraciones Económicas</h2>
+            <div class="cards-row">
+                
+            <div class="info-card">
+                <h4>💰 Declaración de Ingresos (2024)</h4>
+                <p class="amount">S/ 70200</p>
+                <p class="detail">Sector público</p>
+            </div>
+            
+                
+            <div class="info-card">
+                <h4>🏠 Patrimonio Declarado</h4>
+                <p class="amount">S/ 1100000</p>
+                <p class="detail">Inmuebles: Dos predios inscritos en SUNARP en el Barrio Revolución de Azángaro</p>
+                <p class="detail">Vehículos: No especifica</p>
+            </div>
+            
+            </div>
+        </div>
+
+        <div class="section redflags">
+            <h2>⚠️ Análisis de Riesgo</h2>
+            <p style="margin-bottom: 15px;">
+                <strong>Score general:</strong>
+                <span style="background: #fff3e0; color: #f57c00; padding: 5px 12px; border-radius: 5px; font-weight: bold;">
+                    2 / 5
+                </span>
+            </p>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[patrimonio] Severidad: 3/5</span>
+                <div class="redflag-evidence">"dos predios inscritos en SUNARP en el Barrio Revolución de Azángaro, valorizados en conjunto en S/ 1,100,000."</div>
+                <div class="redflag-notes">Patrimonio inmobiliario considerable que podría generar preguntas sobre su origen o posibles conflictos de interés.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[afiliacion] Severidad: 2/5</span>
+                <div class="redflag-evidence">"Entre 2014 y 2015 estuvo afiliada al Partido Nacionalista Peruano, del cual renunció en 2015, y en 2006 intentó afiliarse al movimiento regional Khantati Llaqta, que no logró inscripción."</div>
+                <div class="redflag-notes">Historial de afiliaciones a múltiples partidos, lo que podría cuestionar su consistencia ideológica o lealtad partidaria.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[experiencia_limitada] Severidad: 2/5</span>
+                <div class="redflag-evidence">"Su paso por la política nacional se dio entre 2020 y 2021, cuando ocupó el cargo de congresista de la República"</div>
+                <div class="redflag-notes">Experiencia legislativa limitada a un solo periodo, lo que podría afectar su capacidad de gestión o influencia.</div>
+            </div>
+            
+            <div class="redflag-item ">
+                <span class="redflag-type">[solapamiento_laboral] Severidad: 1/5</span>
+                <div class="redflag-evidence">"ejerciendo como docente en la Institución Educativa Primaria N° 72640 del centro poblado Tuturcuyo, donde actualmente se desempeña como profesora nombrada."</div>
+                <div class="redflag-notes">Posible solapamiento entre su labor docente en el sector público y su actividad política, requiriendo claridad sobre licencias o dedicación exclusiva.</div>
+            </div>
+            
+        </div>
+
+        
+            <div class="section sensitive">
+                <h3>⚠️ Información Sensible Detectada</h3>
+                <ul><li>26 de agosto de 1972</li><li>Barrio Revolución de Azángaro</li></ul>
+            </div>
+            
+
+        <div class="section social-section">
+            <h2>📱 Redes Sociales Identificadas</h2>
+
+            <label>Facebook:</label>
+            <input type="text" value="https://www.facebook.com/irene.carcaustohuanca" readonly style="background: #e8f5e9;" />
+
+            <label>Instagram:</label>
+            <input type="text" value="" placeholder="@usuario" />
+
+            <label>TikTok:</label>
+            <input type="text" value="" placeholder="@usuario" />
+
+            <label>WhatsApp:</label>
+            <input type="text" placeholder="Número de contacto" />
+
+            <label>Observaciones de actividad en redes:</label>
+            <textarea rows="3" style="background: #e8f5e9;">Facebook: 5.7K seguidores seguidores</textarea>
+
+            <label>Mapa de actividad (enlaces y hallazgos):</label>
+            <textarea rows="3" placeholder="Pegar enlaces relevantes encontrados..."></textarea>
+        </div>
+
+        <div class="footer">
+            <p>Ficha generada automáticamente | Scraping: 2026-02-02 13:56:03 | Post ID: 823654204035948</p>
+            <p>Candidate ID: 823654204035948_IreneCarcaustoHuanca</p>
+        </div>
+    </div>
+</body>
+</html>

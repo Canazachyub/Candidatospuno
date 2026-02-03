@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>César Hugo Tito Rojas - Ficha Electoral</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+        .header img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        .header-info { flex: 1; }
+        .header-info h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .chip-party { background: #ff5722; }
+        .chip-region { background: #4caf50; }
+        .chip-role { background: #2196f3; }
+        .source-link {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .source-link:hover { color: white; }
+
+        /* Risk Badge */
+        .risk-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .header { position: relative; }
+
+        /* Sections */
+        .section {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .section:last-child { border-bottom: none; }
+        .section h2 {
+            color: #1a237e;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8eaf6;
+        }
+        .section h3 {
+            color: #424242;
+            font-size: 15px;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Table */
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table th, .info-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        .info-table th {
+            background: #f8f9fa;
+            color: #65676b;
+            font-weight: 600;
+            width: 30%;
+        }
+
+        /* Lists */
+        .profile-list { list-style: none; }
+        .profile-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+            padding-left: 20px;
+            position: relative;
+        }
+        .profile-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #1a237e;
+        }
+        .profile-list li:last-child { border-bottom: none; }
+
+        /* Info Cards */
+        .cards-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            flex: 1;
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #1a237e;
+        }
+        .info-card h4 {
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .info-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1c1e21;
+        }
+        .info-card .detail {
+            color: #65676b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* Red Flags */
+        .redflags { background: #fff8e1; }
+        .redflag-item {
+            background: white;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .redflag-item.high { border-left-color: #f44336; background: #ffebee; }
+        .redflag-item.medium { border-left-color: #ff9800; }
+        .redflag-type {
+            font-weight: bold;
+            color: #f57c00;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .redflag-item.high .redflag-type { color: #c62828; }
+        .redflag-evidence {
+            font-style: italic;
+            color: #65676b;
+            margin: 8px 0;
+            font-size: 13px;
+            padding: 10px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 5px;
+        }
+        .redflag-notes { font-size: 14px; }
+
+        /* Sensitive */
+        .sensitive { background: #fce4ec; }
+        .sensitive h3 { color: #c62828; }
+        .sensitive ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .sensitive li {
+            padding: 8px 12px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        /* Social Section */
+        .social-section input, .social-section textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .social-section input:focus, .social-section textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+        }
+        .social-section label {
+            font-weight: 600;
+            color: #424242;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #65676b;
+            font-size: 12px;
+        }
+        .footer a { color: #1a237e; }
+
+        /* Bio Summary */
+        .bio-summary {
+            background: #e8eaf6;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; text-align: center; }
+            .header img { margin: 0 auto; }
+            .chips { justify-content: center; }
+            .cards-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="imagen.jpg"
+                 alt="Foto del candidato"
+                 onerror="this.src='https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/619915506_828143803586988_4554368335602270722_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFG9h0xLIwM9dbVTmM-tWLjB7zej9auPFwHvN6P1q48XMesSYevDydRfruF7GrXaKcooU5uF4V_J6a-nv-Rtqxj&_nc_ohc=-sTEho_4qPQQ7kNvwFOGjlM&_nc_oc=AdlaY5sZZZ1DjLqCrGGpTvhEGYSt6f5UNHqCJ3F0lCdnnvbBB_0S2E3tlEYVK_7YvRU&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=zeM9CSzYBA9fAmJbMjfUTg&oh=00_Afu0rnTUnuXhtntn2LCx5eM85WvT5F4xmQjdJ-YFl-zoeQ&oe=6986B5A8'" />
+            <div class="header-info">
+                <h1>César Hugo Tito Rojas</h1>
+                <div class="chips">
+                    <span class="chip chip-party">Juntos por el Perú</span>
+                    <span class="chip chip-region">Puno</span>
+                    <span class="chip chip-role">diputado</span>
+                </div>
+                <a href="https://www.facebook.com/photo/?fbid=828143800253655&set=a.128560603545315" target="_blank" class="source-link">
+                    📎 Ver publicación original en Facebook →
+                </a>
+            </div>
+            <div class="risk-badge">
+                Riesgo: 2.5/5
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Información General</h2>
+            <table class="info-table">
+                <tr><th>Nombre completo</th><td>César Hugo Tito Rojas</td></tr>
+                <tr><th>Partido político</th><td>Juntos por el Perú</td></tr>
+                <tr><th>Cargo al que postula</th><td>diputado</td></tr>
+                <tr><th>Región / Ciudad</th><td>Puno / Puno</td></tr>
+                <tr><th>Fuente</th><td><a href="https://www.facebook.com/photo/?fbid=828143800253655&set=a.128560603545315">En Primera Plana</a> - 02 de February de 2026</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>👤 Resumen del Perfil</h2>
+            <div class="bio-summary">
+                Candidato a diputado por Juntos por el Perú en Puno. Docente con más de tres décadas de experiencia en el sector público, que complementó con estudios de derecho y gestión pública. Su perfil combina arraigo local, estabilidad laboral y un historial de afiliaciones políticas diversas, presentándose como una figura de renovación.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Formación y Experiencia</h2>
+
+            <h3>🎓 Educación</h3>
+            <ul class="profile-list"><li>Bachiller en Derecho - Universidad José Carlos Mariátegui (2015)</li><li>Abogado - Universidad José Carlos Mariátegui (2016)</li><li>Posgrado en Gestión Pública - Universidad César Vallejo (None)</li></ul>
+
+            <h3>💼 Experiencia Laboral</h3>
+            <ul class="profile-list"><li>IEP 70146 de Ccopamaya | Docente (1994 - actualidad)</li></ul>
+        </div>
+
+        <div class="section">
+            <h2>💵 Declaraciones Económicas</h2>
+            <div class="cards-row">
+                
+            <div class="info-card">
+                <h4>💰 Declaración de Ingresos (2024)</h4>
+                <p class="amount">S/ 45520</p>
+                <p class="detail">{'sector_publico': 40920, 'otros_ingresos': 4600}</p>
+            </div>
+            
+                
+            <div class="info-card">
+                <h4>🏠 Patrimonio Declarado</h4>
+                <p class="amount">S/ 26416.65</p>
+                <p class="detail">Inmuebles: [{'type': 'casa', 'location': 'Puno', 'value': 26416.65, 'registered': False}, {'type': 'lote', 'location': 'Asociación de Pescadores Artesanales – Cerro', 'value': None, 'registered': None}]</p>
+                <p class="detail">Vehículos: []</p>
+            </div>
+            
+            </div>
+        </div>
+
+        <div class="section redflags">
+            <h2>⚠️ Análisis de Riesgo</h2>
+            <p style="margin-bottom: 15px;">
+                <strong>Score general:</strong>
+                <span style="background: #fff3e0; color: #f57c00; padding: 5px 12px; border-radius: 5px; font-weight: bold;">
+                    2.5 / 5
+                </span>
+            </p>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[afiliacion] Severidad: 3/5</span>
+                <div class="redflag-evidence">"Su actual vínculo con el Partido Político Todo con el Pueblo, inscrito en agosto de 2025, contrasta con sus pasadas militancias en agrupaciones que fueron canceladas o nunca lograron inscripción, como El Frente Amplio por Justicia, Vida y Libertad y Por Amnistía y Derechos Fundamentales."</div>
+                <div class="redflag-notes">Historial de afiliaciones a partidos cancelados o no inscritos, lo que puede generar suspicacias sobre su criterio político o estabilidad partidaria.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[patrimonio] Severidad: 3/5</span>
+                <div class="redflag-evidence">"La ausencia de inscripción en SUNARP de su vivienda y la falta de detalle sobre el lote generan interrogantes sobre la transparencia y formalidad de su patrimonio."</div>
+                <div class="redflag-notes">Bienes inmuebles declarados sin inscripción registral formal, lo que cuestiona la transparencia patrimonial.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[experiencia_limitada] Severidad: 2/5</span>
+                <div class="redflag-evidence">"En todos los casos, Tito Rojas nunca alcanzó cargos de dirigente ni representación... una carrera política sin cargos de liderazgo."</div>
+                <div class="redflag-notes">Falta de experiencia en cargos de liderazgo o representación política previos, lo que puede limitar su capacidad de gestión legislativa.</div>
+            </div>
+            
+            <div class="redflag-item medium">
+                <span class="redflag-type">[inconsistencia] Severidad: 2/5</span>
+                <div class="redflag-evidence">"La polémica surge al contrastar su discurso de transparencia y compromiso social con la realidad de sus antecedentes: afiliaciones políticas que nunca prosperaron, bienes sin inscripción registral..."</div>
+                <div class="redflag-notes">Posible discrepancia entre el discurso público de transparencia y las prácticas documentadas en su historial.</div>
+            </div>
+            
+        </div>
+
+        
+            <div class="section sensitive">
+                <h3>⚠️ Información Sensible Detectada</h3>
+                <ul><li>nacido en Paucarcolla en 1971</li><li>residente en la ciudad de Puno</li><li>casa en Puno</li><li>lote en la Asociación de Pescadores Artesanales – Cerro</li></ul>
+            </div>
+            
+
+        <div class="section social-section">
+            <h2>📱 Redes Sociales Identificadas</h2>
+
+            <label>Facebook:</label>
+            <input type="text" value="https://www.facebook.com/profile.php?id=100082372457814" readonly style="background: #e8f5e9;" />
+
+            <label>Instagram:</label>
+            <input type="text" value="" placeholder="@usuario" />
+
+            <label>TikTok:</label>
+            <input type="text" value="" placeholder="@usuario" />
+
+            <label>WhatsApp:</label>
+            <input type="text" placeholder="Número de contacto" />
+
+            <label>Observaciones de actividad en redes:</label>
+            <textarea rows="3" style="background: #e8f5e9;">Facebook: 5.5K seguidores seguidores</textarea>
+
+            <label>Mapa de actividad (enlaces y hallazgos):</label>
+            <textarea rows="3" placeholder="Pegar enlaces relevantes encontrados..."></textarea>
+        </div>
+
+        <div class="footer">
+            <p>Ficha generada automáticamente | Scraping: 2026-02-02 14:23:56 | Post ID: 828143800253655</p>
+            <p>Candidate ID: 828143800253655_CésarHugoTitoRojas</p>
+        </div>
+    </div>
+</body>
+</html>

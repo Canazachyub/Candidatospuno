@@ -1,0 +1,47 @@
+# Workflow para desplegar el Dashboard de Candidatos a GitHub Pages
+name: Deploy Dashboard to GitHub Pages
+
+on:
+  # Se ejecuta cuando hay push a main
+  push:
+    branches: ["main"]
+    paths:
+      - 'docs/**'
+
+  # Permite ejecutar manualmente desde la pestaña Actions
+  workflow_dispatch:
+
+# Permisos necesarios para desplegar a Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Solo permite un despliegue a la vez
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Job de despliegue
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Subir la carpeta docs
+          path: './docs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
