@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observatorio Electoral EG2026</title>
+    <style>
+        /* ============================================================
+           RESET Y BASE
+           ============================================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        a { color: #60a5fa; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        button { cursor: pointer; font-family: inherit; }
+        input, select { font-family: inherit; }
+
+        /* ============================================================
+           LOADING / CONFIG OVERLAY
+           ============================================================ */
+        #configOverlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #0f172a;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .config-box {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 40px; max-width: 600px; width: 90%; text-align: center;
+        }
+        .config-box h2 { color: #f8fafc; margin-bottom: 8px; font-size: 24px; }
+        .config-box p { color: #94a3b8; margin-bottom: 24px; font-size: 14px; line-height: 1.6; }
+        .config-box input[type="text"] {
+            width: 100%; padding: 12px 16px; background: #0f172a; border: 1px solid #475569;
+            color: #e2e8f0; border-radius: 8px; font-size: 14px; margin-bottom: 16px;
+        }
+        .config-box input[type="text"]:focus { outline: none; border-color: #3b82f6; }
+        .config-box .btn-primary {
+            background: #3b82f6; color: white; border: none; padding: 12px 32px;
+            border-radius: 8px; font-size: 16px; font-weight: 600;
+        }
+        .config-box .btn-primary:hover { background: #2563eb; }
+        .config-box .hint { color: #64748b; font-size: 12px; margin-top: 12px; }
+        .config-box code {
+            background: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #fbbf24;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 24px 30px; border-bottom: 2px solid #3b82f6;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .header-left h1 { font-size: 26px; color: #f8fafc; }
+        .header-left p { color: #94a3b8; font-size: 13px; margin-top: 4px; }
+        .header-right { display: flex; gap: 8px; }
+        .header-right button {
+            background: #334155; border: 1px solid #475569; color: #e2e8f0;
+            padding: 8px 14px; border-radius: 6px; font-size: 13px;
+        }
+        .header-right button:hover { background: #475569; }
+        .header-right button.active { background: #3b82f6; border-color: #3b82f6; }
+
+        /* ============================================================
+           STATS BAR
+           ============================================================ */
+        .stats-bar {
+            display: flex; justify-content: center; gap: 32px; padding: 16px 20px;
+            background: #1e293b; flex-wrap: wrap; border-bottom: 1px solid #334155;
+        }
+        .stat { text-align: center; min-width: 100px; }
+        .stat-number { font-size: 28px; font-weight: bold; color: #3b82f6; }
+        .stat-label { color: #94a3b8; font-size: 12px; margin-top: 2px; }
+        .stat.green .stat-number { color: #22c55e; }
+        .stat.amber .stat-number { color: #f59e0b; }
+        .stat.rose .stat-number { color: #f43f5e; }
+
+        /* ============================================================
+           FILTERS BAR
+           ============================================================ */
+        .filters {
+            display: flex; gap: 12px; padding: 16px 24px; background: #1e293b;
+            border-bottom: 1px solid #334155; flex-wrap: wrap; align-items: center;
+        }
+        .filter-group { display: flex; align-items: center; gap: 6px; }
+        .filter-group label { color: #94a3b8; font-size: 13px; white-space: nowrap; }
+        .filter-group select, .filter-group input {
+            background: #334155; border: 1px solid #475569; color: #e2e8f0;
+            padding: 7px 12px; border-radius: 6px; font-size: 13px;
+        }
+        .filter-group select:focus, .filter-group input:focus { outline: none; border-color: #3b82f6; }
+        .filter-group input[type="text"] { width: 200px; }
+        .btn-filter {
+            background: #3b82f6; color: white; border: none; padding: 7px 16px;
+            border-radius: 6px; font-size: 13px; font-weight: 500;
+        }
+        .btn-filter:hover { background: #2563eb; }
+        .btn-clear {
+            background: transparent; color: #94a3b8; border: 1px solid #475569;
+            padding: 7px 16px; border-radius: 6px; font-size: 13px;
+        }
+        .btn-clear:hover { background: #334155; }
+
+        /* ============================================================
+           MAIN CONTAINER
+           ============================================================ */
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        /* ============================================================
+           VIEW: CARDS GRID
+           ============================================================ */
+        .cards-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+        }
+        .card {
+            background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+            padding: 20px; transition: border-color 0.2s, transform 0.2s; cursor: pointer;
+        }
+        .card:hover { border-color: #3b82f6; transform: translateY(-2px); }
+        .card-header { display: flex; gap: 14px; margin-bottom: 14px; }
+        .card-photo {
+            width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+            background: #334155; border: 2px solid #475569; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; color: #64748b;
+        }
+        .card-photo img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .card-info h3 { font-size: 16px; color: #f8fafc; margin-bottom: 4px; }
+        .card-info .card-dni { font-size: 12px; color: #64748b; }
+        .card-info .card-cargo { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+        .card-partido {
+            display: inline-block; background: #3b82f620; color: #60a5fa;
+            padding: 3px 10px; border-radius: 12px; font-size: 12px; margin-top: 4px;
+        }
+        .card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .card-field { min-width: 0; }
+        .card-field .label { font-size: 11px; color: #64748b; text-transform: uppercase; }
+        .card-field .value { font-size: 13px; color: #cbd5e1; }
+        .card-footer {
+            margin-top: 14px; padding-top: 12px; border-top: 1px solid #334155;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-fb-stats { display: flex; gap: 12px; }
+        .card-fb-stats span { font-size: 12px; color: #94a3b8; }
+        .card-fb-stats span strong { color: #e2e8f0; }
+        .btn-ver {
+            background: #3b82f6; color: white; border: none; padding: 6px 14px;
+            border-radius: 6px; font-size: 12px; font-weight: 500;
+        }
+        .btn-ver:hover { background: #2563eb; }
+        .btn-ficha {
+            background: #7c3aed; color: white; border: none; padding: 6px 14px;
+            border-radius: 6px; font-size: 12px; font-weight: 500;
+            text-decoration: none; display: inline-block;
+        }
+        .btn-ficha:hover { background: #6d28d9; color: white; text-decoration: none; }
+        .card-buttons { display: flex; gap: 6px; align-items: center; }
+
+        /* ============================================================
+           VIEW: FICHAS GRID
+           ============================================================ */
+        .fichas-header {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 20px 24px; margin-bottom: 16px;
+        }
+        .fichas-header h3 { font-size: 18px; color: #f8fafc; margin-bottom: 4px; }
+        .fichas-header p { color: #94a3b8; font-size: 13px; }
+        .fichas-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 14px;
+        }
+        .ficha-card {
+            background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+            padding: 18px; transition: border-color 0.2s;
+        }
+        .ficha-card:hover { border-color: #7c3aed; }
+        .ficha-card h4 {
+            font-size: 14px; color: #f8fafc; margin-bottom: 8px;
+            line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .ficha-card .ficha-meta { font-size: 12px; color: #64748b; margin-bottom: 10px; }
+        .ficha-card .ficha-stats {
+            display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;
+        }
+        .ficha-card .ficha-stats span { font-size: 12px; color: #94a3b8; }
+        .ficha-card .ficha-stats span strong { color: #e2e8f0; }
+        .ficha-card .ficha-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .ficha-candidate-badge {
+            display: inline-block; background: #22c55e20; color: #4ade80;
+            padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 6px;
+        }
+
+        /* ============================================================
+           VIEW: TABLE
+           ============================================================ */
+        .table-wrap {
+            background: #1e293b; border-radius: 10px; overflow: hidden;
+            border: 1px solid #334155;
+        }
+        .table-scroll { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        thead th {
+            background: #334155; padding: 12px 14px; text-align: left; font-weight: 600;
+            color: #f8fafc; font-size: 13px; position: sticky; top: 0; cursor: pointer;
+            white-space: nowrap; user-select: none;
+        }
+        thead th:hover { background: #475569; }
+        thead th .sort-icon { margin-left: 4px; font-size: 10px; opacity: 0.5; }
+        tbody td { padding: 10px 14px; border-bottom: 1px solid #1e293b; font-size: 13px; }
+        tbody tr { background: #0f172a; }
+        tbody tr:hover { background: #1e293b; }
+        tbody tr { cursor: pointer; }
+        .table-photo { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #334155; }
+        .badge {
+            display: inline-block; padding: 3px 8px; border-radius: 10px;
+            font-size: 11px; font-weight: 500;
+        }
+        .badge-blue { background: #3b82f620; color: #60a5fa; }
+        .badge-green { background: #22c55e20; color: #4ade80; }
+
+        /* ============================================================
+           PAGINATION
+           ============================================================ */
+        .pagination {
+            display: flex; justify-content: center; align-items: center;
+            gap: 8px; padding: 20px; flex-wrap: wrap;
+        }
+        .pagination button {
+            background: #1e293b; border: 1px solid #334155; color: #e2e8f0;
+            padding: 8px 14px; border-radius: 6px; font-size: 13px;
+        }
+        .pagination button:hover { background: #334155; }
+        .pagination button.active { background: #3b82f6; border-color: #3b82f6; }
+        .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pagination .page-info { color: #94a3b8; font-size: 13px; }
+
+        /* ============================================================
+           VIEW: PROFILE (Detail)
+           ============================================================ */
+        .profile { display: none; }
+        .profile.active { display: block; }
+        .profile-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: #60a5fa; font-size: 14px; margin-bottom: 20px; cursor: pointer;
+            background: none; border: none;
+        }
+        .profile-back:hover { text-decoration: underline; }
+        .profile-header {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 24px; display: flex; gap: 24px; flex-wrap: wrap;
+        }
+        .profile-photo {
+            width: 140px; height: 140px; border-radius: 12px; object-fit: cover;
+            background: #334155; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 56px; color: #64748b;
+        }
+        .profile-photo img { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; }
+        .profile-main h2 { font-size: 24px; color: #f8fafc; }
+        .profile-main .profile-partido {
+            display: inline-block; background: #3b82f620; color: #60a5fa;
+            padding: 4px 14px; border-radius: 14px; font-size: 13px; margin: 6px 0;
+        }
+        .profile-meta { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
+        .profile-meta-item { min-width: 0; }
+        .profile-meta-item .label { font-size: 11px; color: #64748b; text-transform: uppercase; }
+        .profile-meta-item .value { font-size: 14px; color: #cbd5e1; }
+        .profile-actions { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .profile-actions a, .profile-actions button {
+            background: #334155; border: 1px solid #475569; color: #e2e8f0;
+            padding: 8px 16px; border-radius: 6px; font-size: 13px; display: inline-block;
+        }
+        .profile-actions a:hover, .profile-actions button:hover {
+            background: #475569; text-decoration: none;
+        }
+
+        .profile-section {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 24px; margin-top: 16px;
+        }
+        .profile-section h3 {
+            font-size: 16px; color: #f8fafc; margin-bottom: 16px;
+            padding-bottom: 10px; border-bottom: 1px solid #334155;
+        }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+        .info-item .label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-bottom: 2px; }
+        .info-item .value { font-size: 14px; color: #e2e8f0; }
+
+        .edu-table { width: 100%; border-collapse: collapse; }
+        .edu-table th {
+            text-align: left; padding: 8px 12px; background: #334155;
+            font-size: 12px; color: #94a3b8; font-weight: 500;
+        }
+        .edu-table td { padding: 8px 12px; border-bottom: 1px solid #334155; font-size: 13px; }
+
+        .money-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+        .money-card {
+            background: #0f172a; border-radius: 8px; padding: 16px; text-align: center;
+        }
+        .money-card .money-label { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+        .money-card .money-value { font-size: 22px; font-weight: bold; color: #22c55e; }
+        .money-card.total .money-value { color: #fbbf24; }
+
+        /* Publication cards inside profile */
+        .pub-card {
+            background: #0f172a; border: 1px solid #334155; border-radius: 10px;
+            padding: 16px; margin-bottom: 12px; display: flex; gap: 14px; flex-wrap: wrap;
+        }
+        .pub-image {
+            width: 120px; height: 90px; border-radius: 8px; object-fit: cover;
+            background: #334155; flex-shrink: 0;
+        }
+        .pub-content { flex: 1; min-width: 200px; }
+        .pub-content h4 { font-size: 14px; color: #f8fafc; margin-bottom: 6px; line-height: 1.4; }
+        .pub-content .pub-meta { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+        .pub-reactions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .pub-reactions span { font-size: 12px; color: #94a3b8; }
+        .pub-reactions span strong { color: #e2e8f0; }
+        .pub-link { margin-top: 8px; }
+        .pub-link a { font-size: 12px; }
+
+        /* ============================================================
+           VIEW: COMPARE
+           ============================================================ */
+        .compare-selectors {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 24px; margin-bottom: 16px;
+        }
+        .compare-selectors h3 { font-size: 16px; color: #f8fafc; margin-bottom: 14px; }
+        .compare-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
+        .compare-row select {
+            flex: 1; min-width: 200px; background: #334155; border: 1px solid #475569;
+            color: #e2e8f0; padding: 10px 14px; border-radius: 8px; font-size: 14px;
+        }
+        .compare-row select:focus { outline: none; border-color: #3b82f6; }
+        .compare-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;
+        }
+        .compare-col {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+        .compare-col-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+            padding: 24px 20px 18px; text-align: center;
+            border-bottom: 1px solid #334155;
+        }
+        .compare-col h4 { font-size: 17px; color: #f8fafc; margin: 10px 0 4px; font-weight: 700; }
+        .compare-col .cmp-partido {
+            display: inline-block; background: #3b82f620; color: #60a5fa;
+            padding: 3px 12px; border-radius: 12px; font-size: 12px; margin-top: 4px;
+        }
+        .compare-col .cmp-cargo {
+            color: #94a3b8; font-size: 13px; margin-top: 6px;
+        }
+        .compare-col .cmp-photo {
+            width: 88px; height: 88px; border-radius: 50%; margin: 0 auto;
+            background: #334155; display: flex; align-items: center; justify-content: center;
+            font-size: 34px; color: #64748b; overflow: hidden; border: 3px solid #475569;
+        }
+        .compare-col .cmp-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .compare-col-body { padding: 0; flex: 1; }
+        .cmp-section-title {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+            color: #3b82f6; padding: 10px 16px 6px; font-weight: 600;
+            background: #0f172a;
+        }
+        .compare-table { width: 100%; text-align: left; border-collapse: collapse; }
+        .compare-table tr { border-bottom: 1px solid #1a2332; }
+        .compare-table tr:last-child { border-bottom: none; }
+        .compare-table td { padding: 9px 16px; font-size: 13px; vertical-align: top; }
+        .compare-table td:first-child {
+            color: #64748b; font-size: 12px; width: 38%; white-space: nowrap;
+        }
+        .compare-table td:last-child { color: #e2e8f0; }
+        .compare-table .cmp-highlight td:last-child { color: #fbbf24; font-weight: 600; }
+        .compare-table .cmp-money td:last-child { color: #22c55e; }
+        .compare-table .cmp-fb td:last-child { color: #60a5fa; font-weight: 600; }
+        .compare-col-footer {
+            padding: 14px 16px; border-top: 1px solid #334155;
+            text-align: center; background: #0f172a;
+        }
+
+        /* ============================================================
+           LOADING SPINNER
+           ============================================================ */
+        .loading {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 60px 20px; color: #94a3b8;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 3px solid #334155; border-top-color: #3b82f6;
+            border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state {
+            text-align: center; padding: 60px 20px; color: #64748b;
+        }
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-state p { font-size: 15px; }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            .header { padding: 16px; }
+            .header-left h1 { font-size: 20px; }
+            .filters { padding: 12px 16px; }
+            .filter-group input[type="text"] { width: 150px; }
+            .container { padding: 12px; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .profile-header { flex-direction: column; align-items: center; text-align: center; }
+            .profile-meta { justify-content: center; }
+        }
+
+        /* ============================================================
+           HIDDEN UTILITY
+           ============================================================ */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     CONFIG OVERLAY - Se muestra al inicio si no hay API URL guardada
+     ============================================================ -->
+<div id="configOverlay">
+    <div class="config-box">
+        <h2>Observatorio Electoral EG2026</h2>
+        <p>
+            Para conectar con tu Google Sheet, necesitas la URL de tu Apps Script desplegado.<br>
+            Pegala a continuacion:
+        </p>
+        <input type="text" id="apiUrlInput" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+        <br>
+        <button class="btn-primary" onclick="saveApiUrl()">Conectar</button>
+        <p class="hint">
+            Instrucciones: Abre Apps Script > Implementar > Nueva implementacion > App Web > Copiar URL
+        </p>
+        <p class="hint" style="margin-top:8px;">
+            Si ya configuraste la URL, tambien puedes cambiarla desde el boton <code>Config</code> en el header.
+        </p>
+    </div>
+</div>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="header hidden" id="mainApp">
+    <div class="header-left">
+        <h1>Observatorio Electoral EG2026</h1>
+        <p>Consulta de Candidatos y Actividad en Redes Sociales</p>
+    </div>
+    <div class="header-right">
+        <button id="btnCards" class="active" onclick="switchView('cards')">Tarjetas</button>
+        <button id="btnTable" onclick="switchView('table')">Tabla</button>
+        <button id="btnCompare" onclick="switchView('compare')">Comparar</button>
+        <button id="btnFichas" onclick="switchView('fichas')">Fichas</button>
+        <button id="btnConfig" onclick="showConfig()">Config</button>
+        <a href="../" style="background:#7c3aed;border:1px solid #7c3aed;color:white;padding:8px 14px;border-radius:6px;font-size:13px;text-decoration:none">Dashboard</a>
+    </div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-bar hidden" id="statsBar">
+    <div class="stat"><div class="stat-number" id="statTotal">-</div><div class="stat-label">Candidatos</div></div>
+    <div class="stat"><div class="stat-number" id="statPartidos">-</div><div class="stat-label">Partidos</div></div>
+    <div class="stat green"><div class="stat-number" id="statPubs">-</div><div class="stat-label">Publicaciones FB</div></div>
+    <div class="stat amber"><div class="stat-number" id="statReacciones">-</div><div class="stat-label">Reacciones</div></div>
+    <div class="stat"><div class="stat-number" id="statMasculino">-</div><div class="stat-label">Hombres</div></div>
+    <div class="stat rose"><div class="stat-number" id="statFemenino">-</div><div class="stat-label">Mujeres</div></div>
+</div>
+
+<!-- FILTERS BAR -->
+<div class="filters hidden" id="filtersBar">
+    <div class="filter-group">
+        <label>Buscar:</label>
+        <input type="text" id="searchInput" placeholder="Nombre del candidato..." />
+    </div>
+    <div class="filter-group">
+        <label>Partido:</label>
+        <select id="filterPartido"><option value="">Todos</option></select>
+    </div>
+    <div class="filter-group">
+        <label>Cargo:</label>
+        <select id="filterCargo"><option value="">Todos</option></select>
+    </div>
+    <div class="filter-group">
+        <label>Distrito:</label>
+        <select id="filterDistrito"><option value="">Todos</option></select>
+    </div>
+    <div class="filter-group">
+        <label>Sexo:</label>
+        <select id="filterSexo">
+            <option value="">Todos</option>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+        </select>
+    </div>
+    <button class="btn-filter" onclick="applyFilters()">Filtrar</button>
+    <button class="btn-clear" onclick="clearFilters()">Limpiar</button>
+</div>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<div class="container hidden" id="mainContent">
+
+    <!-- CARDS VIEW -->
+    <div id="viewCards">
+        <div id="cardsLoading" class="loading"><div class="spinner"></div><p>Cargando candidatos...</p></div>
+        <div id="cardsGrid" class="cards-grid"></div>
+        <div id="cardsPagination" class="pagination"></div>
+    </div>
+
+    <!-- TABLE VIEW -->
+    <div id="viewTable" class="hidden">
+        <div id="tableLoading" class="loading"><div class="spinner"></div><p>Cargando candidatos...</p></div>
+        <div class="table-wrap">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="sortBy('foto')" style="width:50px">Foto</th>
+                            <th onclick="sortBy('candidato_nombre')">Nombre <span class="sort-icon">&#9650;&#9660;</span></th>
+                            <th onclick="sortBy('partido')">Partido <span class="sort-icon">&#9650;&#9660;</span></th>
+                            <th onclick="sortBy('cargo')">Cargo <span class="sort-icon">&#9650;&#9660;</span></th>
+                            <th onclick="sortBy('distrito')">Distrito <span class="sort-icon">&#9650;&#9660;</span></th>
+                            <th onclick="sortBy('sexo')">Sexo</th>
+                            <th onclick="sortBy('total_ingresos')">Ingresos <span class="sort-icon">&#9650;&#9660;</span></th>
+                            <th>DNI</th>
+                            <th>Ficha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="tablePagination" class="pagination"></div>
+    </div>
+
+    <!-- COMPARE VIEW -->
+    <div id="viewCompare" class="hidden">
+        <div class="compare-selectors">
+            <h3>Comparar Candidatos</h3>
+            <div class="compare-row">
+                <select id="cmpSelect1"><option value="">Seleccionar candidato 1...</option></select>
+                <select id="cmpSelect2"><option value="">Seleccionar candidato 2...</option></select>
+                <select id="cmpSelect3"><option value="">Seleccionar candidato 3 (opcional)...</option></select>
+                <button class="btn-filter" onclick="doCompare()">Comparar</button>
+            </div>
+        </div>
+        <div id="compareResult" class="compare-grid"></div>
+    </div>
+
+    <!-- FICHAS VIEW -->
+    <div id="viewFichas" class="hidden">
+        <div id="fichasContent"></div>
+    </div>
+
+    <!-- PROFILE VIEW -->
+    <div id="viewProfile" class="profile">
+        <button class="profile-back" onclick="backToList()">&#8592; Volver a la lista</button>
+        <div id="profileContent"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ============================================================
+// STATE
+// ============================================================
+var API_URL = 'https://script.google.com/macros/s/AKfycbytFDNo7Qt-Vd8jQ5vvk88qvsNrF5n9tWnDIZAOXagVXe9iJUxpRodbPdMzElsND-hF/exec';
+var FICHAS_BASE_URL = '../fichas/';
+var DASHBOARD_URL = '../';
+var allCandidatos = [];
+var allPublicaciones = [];
+var filteredCandidatos = [];
+var currentPage = 1;
+var perPage = 12;
+var currentView = 'cards';
+var sortField = 'candidato_nombre';
+var sortAsc = true;
+var statsData = null;
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+    var saved = localStorage.getItem('eg2026_api_url');
+    if (saved) {
+        API_URL = saved;
+    }
+    if (API_URL) {
+        document.getElementById('apiUrlInput').value = API_URL;
+        hideConfig();
+        loadAllData();
+    }
+}
+
+function saveApiUrl() {
+    var url = document.getElementById('apiUrlInput').value.trim();
+    if (!url) return alert('Ingresa la URL del Apps Script');
+    API_URL = url;
+    localStorage.setItem('eg2026_api_url', url);
+    hideConfig();
+    loadAllData();
+}
+
+function showConfig() {
+    document.getElementById('configOverlay').style.display = 'flex';
+    document.getElementById('apiUrlInput').value = API_URL;
+}
+
+function hideConfig() {
+    document.getElementById('configOverlay').style.display = 'none';
+    document.getElementById('mainApp').classList.remove('hidden');
+    document.getElementById('statsBar').classList.remove('hidden');
+    document.getElementById('filtersBar').classList.remove('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+}
+
+// ============================================================
+// API CALLS
+// ============================================================
+function apiCall(action, params, retries) {
+    if (retries === undefined) retries = 2;
+    var url = API_URL + '?action=' + action;
+    if (params) {
+        Object.keys(params).forEach(function(key) {
+            if (params[key]) url += '&' + key + '=' + encodeURIComponent(params[key]);
+        });
+    }
+    return fetch(url, { redirect: 'follow' })
+        .then(function(r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
+        .catch(function(err) {
+            console.error('API Error (' + action + '):', err);
+            if (retries > 0) {
+                console.log('Reintentando ' + action + '... (' + retries + ' intentos restantes)');
+                return new Promise(function(resolve) { setTimeout(resolve, 1500); })
+                    .then(function() { return apiCall(action, params, retries - 1); });
+            }
+            return { error: err.message };
+        });
+}
+
+function showLoadingError(msg) {
+    document.getElementById('cardsLoading').innerHTML =
+        '<div class="empty-state"><div class="icon" style="font-size:48px">&#9888;</div>' +
+        '<p style="color:#f87171;margin-bottom:8px">' + msg + '</p>' +
+        '<p style="font-size:13px">Verifica que el Apps Script este desplegado correctamente.</p>' +
+        '<button class="btn-filter" style="margin-top:12px" onclick="loadAllData()">Reintentar</button></div>';
+    document.getElementById('tableLoading').classList.add('hidden');
+}
+
+function loadAllData() {
+    // Reset loading state
+    document.getElementById('cardsLoading').innerHTML = '<div class="spinner"></div><p>Cargando candidatos desde Google Sheets...</p>';
+    document.getElementById('cardsLoading').className = 'loading';
+    document.getElementById('cardsLoading').classList.remove('hidden');
+
+    // Cargar candidatos, publicaciones y stats en paralelo
+    Promise.all([
+        apiCall('candidatos'),
+        apiCall('publicaciones'),
+        apiCall('stats')
+    ]).then(function(results) {
+        var candData = results[0];
+        var pubData = results[1];
+        statsData = results[2];
+
+        if (candData.error) {
+            showLoadingError('Error al cargar candidatos: ' + candData.error);
+            return;
+        }
+
+        allCandidatos = candData.data || [];
+        allPublicaciones = pubData.data || [];
+        filteredCandidatos = allCandidatos.slice();
+
+        if (allCandidatos.length === 0) {
+            showLoadingError('La hoja "Candidatos" esta vacia o no se encontro. Verifica el nombre de la hoja en el Sheet.');
+            return;
+        }
+
+        renderStats();
+        populateFilters();
+        populateCompareSelects();
+        renderCurrentView();
+
+        document.getElementById('cardsLoading').classList.add('hidden');
+        document.getElementById('tableLoading').classList.add('hidden');
+    }).catch(function(err) {
+        showLoadingError('Error de conexion: ' + err.message);
+    });
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function renderStats() {
+    if (!statsData) return;
+    var c = statsData.candidatos || {};
+    var p = statsData.publicaciones || {};
+
+    // Contar cuantas publicaciones estan vinculadas
+    var vinculadas = 0;
+    allPublicaciones.forEach(function(pub) {
+        var linked = allCandidatos.some(function(cand) { return matchCandidatoPub(cand, pub); });
+        if (linked) vinculadas++;
+    });
+
+    document.getElementById('statTotal').textContent = c.total || allCandidatos.length;
+    document.getElementById('statPartidos').textContent = c.total_partidos || '-';
+    document.getElementById('statPubs').textContent = allPublicaciones.length + ' (' + vinculadas + ' vinc.)';
+    document.getElementById('statReacciones').textContent = formatNumber(p.total_reacciones || 0);
+    document.getElementById('statMasculino').textContent = (c.sexos || {}).masculino || '-';
+    document.getElementById('statFemenino').textContent = (c.sexos || {}).femenino || '-';
+
+    console.log('Publicaciones totales:', allPublicaciones.length, '| Vinculadas a candidatos:', vinculadas);
+}
+
+// ============================================================
+// FILTERS
+// ============================================================
+function populateFilters() {
+    var partidos = {}, cargos = {}, distritos = {};
+    allCandidatos.forEach(function(c) {
+        if (c.partido) partidos[c.partido] = true;
+        if (c.cargo) cargos[c.cargo] = true;
+        if (c.distrito) distritos[c.distrito] = true;
+    });
+
+    fillSelect('filterPartido', Object.keys(partidos).sort());
+    fillSelect('filterCargo', Object.keys(cargos).sort());
+    fillSelect('filterDistrito', Object.keys(distritos).sort());
+}
+
+function fillSelect(id, options) {
+    var sel = document.getElementById(id);
+    var current = sel.value;
+    // Keep first option "Todos"
+    while (sel.options.length > 1) sel.remove(1);
+    options.forEach(function(opt) {
+        var o = document.createElement('option');
+        o.value = opt; o.textContent = opt;
+        sel.appendChild(o);
+    });
+    sel.value = current;
+}
+
+function applyFilters() {
+    var q = document.getElementById('searchInput').value.toLowerCase().trim();
+    var partido = document.getElementById('filterPartido').value;
+    var cargo = document.getElementById('filterCargo').value;
+    var distrito = document.getElementById('filterDistrito').value;
+    var sexo = document.getElementById('filterSexo').value;
+
+    filteredCandidatos = allCandidatos.filter(function(c) {
+        if (q) {
+            var texto = [c.candidato_nombre, c.nombres, c.apellido_paterno, c.apellido_materno, c.dni]
+                .join(' ').toLowerCase();
+            if (texto.indexOf(q) === -1) return false;
+        }
+        if (partido && str(c.partido) !== partido) return false;
+        if (cargo && str(c.cargo) !== cargo) return false;
+        if (distrito && str(c.distrito) !== distrito) return false;
+        if (sexo) {
+            var s = str(c.sexo).toLowerCase();
+            if (s !== sexo && s.charAt(0) !== sexo.charAt(0)) return false;
+        }
+        return true;
+    });
+
+    currentPage = 1;
+    renderCurrentView();
+}
+
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('filterPartido').value = '';
+    document.getElementById('filterCargo').value = '';
+    document.getElementById('filterDistrito').value = '';
+    document.getElementById('filterSexo').value = '';
+    filteredCandidatos = allCandidatos.slice();
+    currentPage = 1;
+    renderCurrentView();
+}
+
+// Busqueda en tiempo real al escribir
+document.getElementById('searchInput').addEventListener('input', function() {
+    applyFilters();
+});
+
+// ============================================================
+// VIEW SWITCHING
+// ============================================================
+function switchView(view) {
+    currentView = view;
+    ['btnCards', 'btnTable', 'btnCompare', 'btnFichas'].forEach(function(id) {
+        document.getElementById(id).classList.remove('active');
+    });
+
+    document.getElementById('viewCards').classList.add('hidden');
+    document.getElementById('viewTable').classList.add('hidden');
+    document.getElementById('viewCompare').classList.add('hidden');
+    document.getElementById('viewFichas').classList.add('hidden');
+    document.getElementById('viewProfile').classList.remove('active');
+
+    if (view === 'cards') {
+        document.getElementById('btnCards').classList.add('active');
+        document.getElementById('viewCards').classList.remove('hidden');
+    } else if (view === 'table') {
+        document.getElementById('btnTable').classList.add('active');
+        document.getElementById('viewTable').classList.remove('hidden');
+    } else if (view === 'compare') {
+        document.getElementById('btnCompare').classList.add('active');
+        document.getElementById('viewCompare').classList.remove('hidden');
+    } else if (view === 'fichas') {
+        document.getElementById('btnFichas').classList.add('active');
+        document.getElementById('viewFichas').classList.remove('hidden');
+    }
+    renderCurrentView();
+}
+
+function renderCurrentView() {
+    if (currentView === 'cards') renderCards();
+    else if (currentView === 'table') renderTable();
+    else if (currentView === 'fichas') renderFichas();
+}
+
+// ============================================================
+// CARDS VIEW
+// ============================================================
+function renderCards() {
+    var grid = document.getElementById('cardsGrid');
+    var sorted = sortCandidatos(filteredCandidatos);
+    var start = (currentPage - 1) * perPage;
+    var pageData = sorted.slice(start, start + perPage);
+
+    if (pageData.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><div class="icon">&#128269;</div><p>No se encontraron candidatos con esos filtros</p></div>';
+        document.getElementById('cardsPagination').innerHTML = '';
+        return;
+    }
+
+    grid.innerHTML = pageData.map(function(c) {
+        var pubs = getPublicacionesCount(c);
+        var reacciones = getReaccionesTotal(c);
+        return '<div class="card" onclick="showProfile(\'' + esc(str(c.dni)) + '\')">' +
+            '<div class="card-header">' +
+                '<div class="card-photo">' + getPhotoHTML(c, 72) + '</div>' +
+                '<div class="card-info">' +
+                    '<h3>' + esc(str(c.candidato_nombre || (c.nombres + ' ' + c.apellido_paterno))) + '</h3>' +
+                    '<div class="card-dni">DNI: ' + esc(str(c.dni)) + '</div>' +
+                    '<div class="card-cargo">' + esc(str(c.cargo)) + '</div>' +
+                    '<div class="card-partido">' + esc(str(c.partido)) + '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="card-body">' +
+                '<div class="card-field"><div class="label">Distrito</div><div class="value">' + esc(str(c.distrito || '-')) + '</div></div>' +
+                '<div class="card-field"><div class="label">Sexo</div><div class="value">' + esc(str(c.sexo || '-')) + '</div></div>' +
+                '<div class="card-field"><div class="label">Ingresos</div><div class="value">' + formatMoney(c.total_ingresos) + '</div></div>' +
+                '<div class="card-field"><div class="label">Bienes</div><div class="value">' + formatMoney(c.bienes_muebles_inmuebles) + '</div></div>' +
+            '</div>' +
+            '<div class="card-footer">' +
+                '<div class="card-fb-stats">' +
+                    '<span>FB: <strong>' + pubs + '</strong> posts</span>' +
+                    '<span>Reacciones: <strong>' + reacciones + '</strong></span>' +
+                '</div>' +
+                '<div class="card-buttons">' +
+                    fichaButton(c) +
+                    '<button class="btn-ver">Ver perfil</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+
+    renderPagination('cardsPagination', sorted.length);
+}
+
+// ============================================================
+// TABLE VIEW
+// ============================================================
+function renderTable() {
+    var tbody = document.getElementById('tableBody');
+    var sorted = sortCandidatos(filteredCandidatos);
+    var start = (currentPage - 1) * perPage;
+    var pageData = sorted.slice(start, start + perPage);
+
+    if (pageData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#64748b;">No se encontraron candidatos</td></tr>';
+        document.getElementById('tablePagination').innerHTML = '';
+        return;
+    }
+
+    tbody.innerHTML = pageData.map(function(c) {
+        var fichaUrl = getFichaUrlForCandidato(c);
+        var fichaCell = fichaUrl
+            ? '<a href="' + esc(fichaUrl) + '" target="_blank" class="btn-ficha" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation()">Ver Ficha</a>'
+            : '<span style="color:#475569">-</span>';
+        return '<tr onclick="showProfile(\'' + esc(str(c.dni)) + '\')">' +
+            '<td>' + getPhotoHTML(c, 36) + '</td>' +
+            '<td><strong>' + esc(str(c.candidato_nombre || (c.nombres + ' ' + c.apellido_paterno))) + '</strong></td>' +
+            '<td><span class="badge badge-blue">' + esc(str(c.partido || '-')) + '</span></td>' +
+            '<td>' + esc(str(c.cargo || '-')) + '</td>' +
+            '<td>' + esc(str(c.distrito || '-')) + '</td>' +
+            '<td>' + esc(str(c.sexo || '-')) + '</td>' +
+            '<td>' + formatMoney(c.total_ingresos) + '</td>' +
+            '<td>' + esc(str(c.dni)) + '</td>' +
+            '<td>' + fichaCell + '</td>' +
+        '</tr>';
+    }).join('');
+
+    renderPagination('tablePagination', sorted.length);
+}
+
+// ============================================================
+// SORT
+// ============================================================
+function sortBy(field) {
+    if (sortField === field) {
+        sortAsc = !sortAsc;
+    } else {
+        sortField = field;
+        sortAsc = true;
+    }
+    renderCurrentView();
+}
+
+function sortCandidatos(arr) {
+    return arr.slice().sort(function(a, b) {
+        var va = a[sortField] || '';
+        var vb = b[sortField] || '';
+        if (typeof va === 'number' && typeof vb === 'number') {
+            return sortAsc ? va - vb : vb - va;
+        }
+        va = String(va).toLowerCase();
+        vb = String(vb).toLowerCase();
+        if (va < vb) return sortAsc ? -1 : 1;
+        if (va > vb) return sortAsc ? 1 : -1;
+        return 0;
+    });
+}
+
+// ============================================================
+// PAGINATION
+// ============================================================
+function renderPagination(containerId, total) {
+    var container = document.getElementById(containerId);
+    var totalPages = Math.ceil(total / perPage);
+    if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+    var html = '<button ' + (currentPage <= 1 ? 'disabled' : '') + ' onclick="goPage(' + (currentPage - 1) + ')">&#8592; Anterior</button>';
+    html += '<span class="page-info">Pagina ' + currentPage + ' de ' + totalPages + ' (' + total + ' resultados)</span>';
+    html += '<button ' + (currentPage >= totalPages ? 'disabled' : '') + ' onclick="goPage(' + (currentPage + 1) + ')">Siguiente &#8594;</button>';
+    container.innerHTML = html;
+}
+
+function goPage(page) {
+    currentPage = page;
+    renderCurrentView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// PROFILE VIEW
+// ============================================================
+function showProfile(dni) {
+    var candidato = allCandidatos.find(function(c) { return String(c.dni) === String(dni); });
+    if (!candidato) return;
+
+    // Hide list views
+    document.getElementById('viewCards').classList.add('hidden');
+    document.getElementById('viewTable').classList.add('hidden');
+    document.getElementById('viewCompare').classList.add('hidden');
+
+    var profile = document.getElementById('viewProfile');
+    profile.classList.add('active');
+
+    // Find related publications using smart matching
+    var pubs = getPubsCandidato(candidato);
+
+    var content = document.getElementById('profileContent');
+    content.innerHTML = buildProfileHTML(candidato, pubs);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToList() {
+    document.getElementById('viewProfile').classList.remove('active');
+    switchView(currentView);
+}
+
+function buildProfileHTML(c, pubs) {
+    var nombre = esc(str(c.candidato_nombre || (c.nombres + ' ' + c.apellido_paterno + ' ' + c.apellido_materno)));
+    var html = '';
+
+    // HEADER
+    html += '<div class="profile-header">';
+    html += '<div class="profile-photo">' + getPhotoHTML(c, 140) + '</div>';
+    html += '<div class="profile-main">';
+    html += '<h2>' + nombre + '</h2>';
+    html += '<div class="profile-partido">' + esc(str(c.partido)) + '</div>';
+    html += '<div class="profile-meta">';
+    html += metaItem('DNI', c.dni);
+    html += metaItem('Cargo', c.cargo);
+    html += metaItem('Posicion', c.posicion);
+    html += metaItem('Estado', c.estado_candidato);
+    html += metaItem('Expediente', c.expediente);
+    html += '</div>';
+    html += '<div class="profile-actions">';
+    var fichaUrl = getFichaUrlForCandidato(c);
+    if (fichaUrl) html += '<a href="' + esc(fichaUrl) + '" target="_blank" style="background:#7c3aed;border-color:#7c3aed;color:white">Ver Ficha Completa</a>';
+    if (c.url_hoja_vida) html += '<a href="' + esc(str(c.url_hoja_vida)) + '" target="_blank">Ver Hoja de Vida JNE</a>';
+    if (c.url_foto) html += '<a href="' + esc(str(c.url_foto)) + '" target="_blank">Ver Foto Oficial</a>';
+    html += '<a href="' + esc(DASHBOARD_URL) + '" target="_blank">Ver Dashboard General</a>';
+    html += '</div>';
+    html += '</div></div>';
+
+    // DATOS PERSONALES
+    html += '<div class="profile-section">';
+    html += '<h3>Datos Personales</h3>';
+    html += '<div class="info-grid">';
+    html += infoItem('Nombres', c.nombres);
+    html += infoItem('Apellido Paterno', c.apellido_paterno);
+    html += infoItem('Apellido Materno', c.apellido_materno);
+    html += infoItem('Sexo', c.sexo);
+    html += infoItem('Fecha de Nacimiento', c.fecha_nacimiento);
+    html += infoItem('Lugar de Nacimiento', c.lugar_nacimiento);
+    html += infoItem('Lugar de Domicilio', c.lugar_domicilio);
+    html += infoItem('Distrito', c.distrito);
+    html += '</div></div>';
+
+    // FORMACION ACADEMICA
+    html += '<div class="profile-section">';
+    html += '<h3>Formacion Academica</h3>';
+    html += '<table class="edu-table"><thead><tr><th>Nivel</th><th>Detalle</th></tr></thead><tbody>';
+    if (c.educacion_basica) html += '<tr><td>Educacion Basica</td><td>' + esc(str(c.educacion_basica)) + '</td></tr>';
+    if (c.primaria) html += '<tr><td>Primaria</td><td>' + esc(str(c.primaria)) + '</td></tr>';
+    if (c.secundaria) html += '<tr><td>Secundaria</td><td>' + esc(str(c.secundaria)) + '</td></tr>';
+    if (c.estudios_tecnicos) html += '<tr><td>Estudios Tecnicos</td><td>' + esc(str(c.estudios_tecnicos)) + '</td></tr>';
+    if (c.estudios_no_universitarios) html += '<tr><td>No Universitarios</td><td>' + esc(str(c.estudios_no_universitarios)) + '</td></tr>';
+    if (c.estudios_universitarios) html += '<tr><td>Universitarios</td><td>' + esc(str(c.estudios_universitarios)) + '</td></tr>';
+    if (c.estudios_posgrado) html += '<tr><td>Posgrado</td><td>' + esc(str(c.estudios_posgrado)) + '</td></tr>';
+    html += '</tbody></table></div>';
+
+    // EXPERIENCIA Y CARGOS
+    html += '<div class="profile-section">';
+    html += '<h3>Experiencia y Cargos</h3>';
+    html += '<div class="info-grid">';
+    html += infoItem('Experiencia Laboral', c.experiencia_laboral);
+    html += infoItem('Cargos Partidarios', c.cargos_partidarios);
+    html += infoItem('Cargos de Eleccion Popular', c.cargos_eleccion_popular);
+    html += '</div></div>';
+
+    // INGRESOS Y BIENES
+    html += '<div class="profile-section">';
+    html += '<h3>Declaracion Jurada - Ingresos y Bienes</h3>';
+    html += '<div class="money-grid">';
+    html += moneyCard('Remuneracion Publica', c.remuneracion_publica);
+    html += moneyCard('Remuneracion Privada', c.remuneracion_privada);
+    html += moneyCard('Total Ingresos', c.total_ingresos, true);
+    html += moneyCard('Bienes Muebles e Inmuebles', c.bienes_muebles_inmuebles);
+    html += '</div></div>';
+
+    // PUBLICACIONES DE FACEBOOK
+    html += '<div class="profile-section">';
+    html += '<h3>Actividad en Redes Sociales (' + pubs.length + ' publicaciones)</h3>';
+    if (pubs.length === 0) {
+        html += '<div class="empty-state"><p>No se encontraron publicaciones vinculadas a este candidato</p></div>';
+    } else {
+        // Summary stats
+        var totalR = 0, totalC = 0, totalS = 0;
+        pubs.forEach(function(p) {
+            totalR += parseInt(p.total_reacciones) || 0;
+            totalC += parseInt(p.comentarios) || 0;
+            totalS += parseInt(p.compartidos) || 0;
+        });
+        html += '<div class="money-grid" style="margin-bottom:16px;">';
+        html += '<div class="money-card"><div class="money-label">Total Reacciones</div><div class="money-value" style="color:#3b82f6">' + formatNumber(totalR) + '</div></div>';
+        html += '<div class="money-card"><div class="money-label">Total Comentarios</div><div class="money-value" style="color:#f59e0b">' + formatNumber(totalC) + '</div></div>';
+        html += '<div class="money-card"><div class="money-label">Total Compartidos</div><div class="money-value" style="color:#8b5cf6">' + formatNumber(totalS) + '</div></div>';
+        html += '</div>';
+
+        pubs.forEach(function(p) {
+            html += '<div class="pub-card">';
+            if (p.imagen) {
+                html += '<img class="pub-image" src="' + esc(str(p.imagen)) + '" onerror="this.style.display=\'none\'" />';
+            }
+            html += '<div class="pub-content">';
+            html += '<h4>' + esc(str(p.titulo || 'Sin titulo').substring(0, 150)) + '</h4>';
+            html += '<div class="pub-meta">';
+            html += 'Fecha: ' + esc(str(p.fecha_publicacion || '-'));
+            html += ' &bull; Pagina: ' + esc(str(p.pagina || '-'));
+            if (p.hashtags) html += ' &bull; ' + esc(str(p.hashtags));
+            html += '</div>';
+            html += '<div class="pub-reactions">';
+            html += '<span>Likes: <strong>' + (p.me_gusta || 0) + '</strong></span>';
+            html += '<span>Enojos: <strong>' + (p.me_enoja || 0) + '</strong></span>';
+            html += '<span>Corazones: <strong>' + (p.me_encanta || 0) + '</strong></span>';
+            html += '<span>Comentarios: <strong>' + (p.comentarios || 0) + '</strong></span>';
+            html += '<span>Compartidos: <strong>' + (p.compartidos || 0) + '</strong></span>';
+            html += '<span>Total: <strong>' + (p.total_reacciones || 0) + '</strong></span>';
+            html += '</div>';
+            html += '<div class="pub-link" style="display:flex;gap:12px;flex-wrap:wrap">';
+            var pFichaUrl = getFichaUrl(p);
+            if (pFichaUrl) html += '<a href="' + esc(pFichaUrl) + '" target="_blank" class="btn-ficha" style="font-size:11px;padding:4px 10px">Ver Ficha &#8599;</a>';
+            if (p.url_original) html += '<a href="' + esc(str(p.url_original)) + '" target="_blank">Ver en Facebook &#8599;</a>';
+            html += '</div>';
+            html += '</div></div>';
+        });
+    }
+    html += '</div>';
+
+    return html;
+}
+
+// ============================================================
+// COMPARE VIEW
+// ============================================================
+function populateCompareSelects() {
+    var sorted = allCandidatos.slice().sort(function(a, b) {
+        return str(a.candidato_nombre).localeCompare(str(b.candidato_nombre));
+    });
+
+    ['cmpSelect1', 'cmpSelect2', 'cmpSelect3'].forEach(function(id) {
+        var sel = document.getElementById(id);
+        while (sel.options.length > 1) sel.remove(1);
+        sorted.forEach(function(c) {
+            var o = document.createElement('option');
+            o.value = str(c.dni);
+            o.textContent = str(c.candidato_nombre || (c.nombres + ' ' + c.apellido_paterno)) + ' - ' + str(c.partido);
+            sel.appendChild(o);
+        });
+    });
+}
+
+function doCompare() {
+    var dnis = [
+        document.getElementById('cmpSelect1').value,
+        document.getElementById('cmpSelect2').value,
+        document.getElementById('cmpSelect3').value
+    ].filter(function(d) { return d; });
+
+    if (dnis.length < 2) return alert('Selecciona al menos 2 candidatos para comparar');
+
+    var container = document.getElementById('compareResult');
+    container.innerHTML = dnis.map(function(dni) {
+        var c = allCandidatos.find(function(x) { return String(x.dni) === dni; });
+        if (!c) return '';
+        var pubs = getPublicacionesCount(c);
+        var reacciones = getReaccionesTotal(c);
+        var eduText = getEducacionResumen(c);
+
+        return '<div class="compare-col">' +
+            // Header con foto y nombre
+            '<div class="compare-col-header">' +
+                '<div class="cmp-photo">' + getPhotoHTML(c, 88) + '</div>' +
+                '<h4>' + esc(str(c.candidato_nombre || (c.nombres + ' ' + c.apellido_paterno))) + '</h4>' +
+                '<div class="cmp-partido">' + esc(str(c.partido || '-')) + '</div>' +
+                '<div class="cmp-cargo">' + esc(str(c.cargo || '-')) + '</div>' +
+            '</div>' +
+            // Body con secciones
+            '<div class="compare-col-body">' +
+                // Datos personales
+                '<div class="cmp-section-title">Datos Personales</div>' +
+                '<table class="compare-table">' +
+                cmpRow('DNI', c.dni) +
+                cmpRow('Distrito', c.distrito) +
+                cmpRow('Sexo', c.sexo) +
+                cmpRow('Nacimiento', c.fecha_nacimiento) +
+                '</table>' +
+                // Formacion
+                '<div class="cmp-section-title">Formacion</div>' +
+                '<table class="compare-table">' +
+                cmpRow('Educacion', eduText) +
+                cmpRow('Exp. Laboral', c.experiencia_laboral ? 'Si' : 'No registra') +
+                '</table>' +
+                // Economia
+                '<div class="cmp-section-title">Declaracion Jurada</div>' +
+                '<table class="compare-table">' +
+                cmpRowHtml('Rem. Publica', formatMoney(c.remuneracion_publica), 'cmp-money') +
+                cmpRowHtml('Rem. Privada', formatMoney(c.remuneracion_privada), 'cmp-money') +
+                cmpRowHtml('Total Ingresos', formatMoney(c.total_ingresos), 'cmp-highlight') +
+                cmpRowHtml('Bienes', formatMoney(c.bienes_muebles_inmuebles), 'cmp-money') +
+                '</table>' +
+                // Redes sociales
+                '<div class="cmp-section-title">Redes Sociales</div>' +
+                '<table class="compare-table">' +
+                cmpRowHtml('Posts FB', '<strong>' + pubs + '</strong> publicaciones', 'cmp-fb') +
+                cmpRowHtml('Reacciones', '<strong>' + reacciones + '</strong> totales', 'cmp-fb') +
+                '</table>' +
+            '</div>' +
+            // Footer
+            '<div class="compare-col-footer" style="display:flex;gap:8px;justify-content:center">' +
+                fichaButton(c) +
+                '<button class="btn-ver" onclick="showProfile(\'' + esc(str(c.dni)) + '\')">Ver perfil completo</button>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+}
+
+function cmpRow(label, value) {
+    var v = str(value || '-');
+    return '<tr><td>' + label + '</td><td>' + esc(v) + '</td></tr>';
+}
+
+function cmpRowHtml(label, htmlValue, trClass) {
+    return '<tr class="' + (trClass || '') + '"><td>' + label + '</td><td>' + (htmlValue || '-') + '</td></tr>';
+}
+
+function getEducacionResumen(c) {
+    if (c.estudios_posgrado) return 'Posgrado';
+    if (c.estudios_universitarios) return 'Universitario';
+    if (c.estudios_no_universitarios) return 'No Universitario';
+    if (c.estudios_tecnicos) return 'Tecnico';
+    if (c.secundaria) return 'Secundaria';
+    if (c.primaria) return 'Primaria';
+    if (c.educacion_basica) return 'Basica';
+    return 'No registra';
+}
+
+// ============================================================
+// FICHAS VIEW
+// ============================================================
+function renderFichas() {
+    var container = document.getElementById('fichasContent');
+
+    // Filtrar publicaciones que tienen ficha (carpeta_local o id_publicacion)
+    var pubsConFicha = allPublicaciones.filter(function(p) {
+        return getFichaUrl(p) !== '';
+    });
+
+    if (pubsConFicha.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">&#128196;</div><p>No se encontraron publicaciones con fichas disponibles</p></div>';
+        return;
+    }
+
+    // Contar cuantas estan vinculadas a candidatos del sheet
+    var vinculadas = 0;
+    pubsConFicha.forEach(function(p) {
+        var linked = allCandidatos.some(function(c) { return matchCandidatoPub(c, p); });
+        if (linked) vinculadas++;
+    });
+
+    var html = '<div class="fichas-header">' +
+        '<h3>Fichas de Candidatos Desplegadas (' + pubsConFicha.length + ' fichas)</h3>' +
+        '<p>' + vinculadas + ' vinculadas a candidatos de tu hoja &bull; ' +
+        (pubsConFicha.length - vinculadas) + ' de candidatos externos &bull; ' +
+        '<a href="' + esc(DASHBOARD_URL) + '" target="_blank">Ver Dashboard General</a></p>' +
+    '</div>';
+
+    html += '<div class="fichas-grid">';
+    pubsConFicha.forEach(function(p) {
+        var fichaUrl = getFichaUrl(p);
+        var titulo = str(p.titulo || 'Sin titulo');
+        if (titulo.length > 120) titulo = titulo.substring(0, 120) + '...';
+
+        // Buscar si esta vinculada a algun candidato del sheet
+        var candidatoLinked = null;
+        allCandidatos.forEach(function(c) {
+            if (!candidatoLinked && matchCandidatoPub(c, p)) candidatoLinked = c;
+        });
+
+        html += '<div class="ficha-card">';
+        html += '<h4>' + esc(titulo) + '</h4>';
+        html += '<div class="ficha-meta">';
+        html += 'Fecha: ' + esc(str(p.fecha_publicacion || '-'));
+        if (p.pagina) html += ' &bull; ' + esc(str(p.pagina));
+        if (candidatoLinked) {
+            html += '<span class="ficha-candidate-badge">Candidato en hoja</span>';
+        }
+        html += '</div>';
+        html += '<div class="ficha-stats">';
+        html += '<span>Reacciones: <strong>' + (p.total_reacciones || 0) + '</strong></span>';
+        html += '<span>Comentarios: <strong>' + (p.comentarios || 0) + '</strong></span>';
+        html += '<span>Compartidos: <strong>' + (p.compartidos || 0) + '</strong></span>';
+        html += '</div>';
+        html += '<div class="ficha-actions">';
+        html += '<a href="' + esc(fichaUrl) + '" target="_blank" class="btn-ficha">Ver Ficha</a>';
+        if (p.url_original) html += '<a href="' + esc(str(p.url_original)) + '" target="_blank" style="font-size:12px">Ver en Facebook</a>';
+        if (candidatoLinked) {
+            html += '<a href="javascript:void(0)" onclick="showProfile(\'' + esc(str(candidatoLinked.dni)) + '\')" style="font-size:12px;color:#4ade80">Ver perfil candidato</a>';
+        }
+        html += '</div>';
+        html += '</div>';
+    });
+    html += '</div>';
+
+    container.innerHTML = html;
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function str(v) { return v === null || v === undefined ? '' : String(v); }
+
+function esc(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+}
+
+function formatMoney(val) {
+    var n = parseFloat(val);
+    if (isNaN(n) || n === 0) return '<span style="color:#64748b">No declara</span>';
+    return 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function formatNumber(n) {
+    if (!n && n !== 0) return '0';
+    return Number(n).toLocaleString('es-PE');
+}
+
+function getPhotoHTML(c, size) {
+    var url = str(c.url_foto);
+    if (url) {
+        return '<img src="' + esc(url) + '" width="' + size + '" height="' + size + '" style="border-radius:50%;object-fit:cover;" onerror="this.parentElement.innerHTML=\'&#128100;\'" />';
+    }
+    return '&#128100;';
+}
+
+function getFichaUrl(pub) {
+    // Extraer carpeta del campo carpeta_local: "publicaciones\\2026-02-02_824155063985862"
+    var carpeta = str(pub.carpeta_local || '');
+    var folder = carpeta.replace(/^.*[\\\/]/, ''); // quitar prefijo "publicaciones\\"
+    if (!folder && pub.id_publicacion) {
+        folder = '2026-02-02_' + pub.id_publicacion;
+    }
+    if (!folder) return '';
+    return FICHAS_BASE_URL + folder + '/index.html';
+}
+
+function getFichaUrlForCandidato(candidato) {
+    var pubs = getPubsCandidato(candidato);
+    if (pubs.length === 0) return '';
+    return getFichaUrl(pubs[0]);
+}
+
+function fichaButton(candidato) {
+    var url = getFichaUrlForCandidato(candidato);
+    if (!url) return '';
+    return '<a href="' + esc(url) + '" target="_blank" class="btn-ficha" onclick="event.stopPropagation()">Ver Ficha</a>';
+}
+
+// ============================================================
+// VINCULACION CANDIDATO <-> PUBLICACIONES
+// Normaliza acentos y prueba todas las combinaciones de nombre
+// ============================================================
+function norm(text) {
+    // Lowercase + quitar acentos/tildes + underscores->espacios + strip hashtags
+    return str(text).toLowerCase().trim()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/_/g, ' ')
+        .replace(/#/g, '');
+}
+
+function matchCandidatoPub(candidato, pub) {
+    var titulo = norm(pub.titulo || '');
+    var pubCandNombre = norm(pub.candidato_nombre || '');
+
+    // Datos del candidato normalizados
+    var candNombre = norm(candidato.candidato_nombre || '');
+    var nombres = norm(candidato.nombres || '');
+    var apPaterno = norm(candidato.apellido_paterno || '');
+    var apMaterno = norm(candidato.apellido_materno || '');
+
+    // 1. Match directo por campo candidato_nombre en publicacion
+    if (pubCandNombre && candNombre && pubCandNombre === candNombre) return true;
+
+    // 2. Match por candidato_nombre completo en titulo
+    if (candNombre.length > 5 && titulo.indexOf(candNombre) > -1) return true;
+
+    // 3. Probar TODAS las combinaciones de nombre en titulo
+    if (apPaterno && nombres) {
+        var combos = [
+            nombres + ' ' + apPaterno,                          // Juan Perez
+            apPaterno + ' ' + nombres,                          // Perez Juan
+            nombres + ' ' + apPaterno + ' ' + apMaterno,        // Juan Perez Quispe
+            apPaterno + ' ' + apMaterno + ' ' + nombres,        // Perez Quispe Juan
+            // NO incluir apPaterno+apMaterno solo (genera falsos positivos entre personas distintas con mismos apellidos)
+        ];
+
+        for (var i = 0; i < combos.length; i++) {
+            var combo = combos[i].trim();
+            if (combo.length > 5 && titulo.indexOf(combo) > -1) return true;
+        }
+
+        // 4. Primer nombre + apellido paterno (para nombres compuestos)
+        var primerNombre = nombres.split(' ')[0];
+        if (primerNombre.length > 2 && apPaterno.length > 3) {
+            if (titulo.indexOf(primerNombre + ' ' + apPaterno) > -1) return true;
+            if (titulo.indexOf(apPaterno + ' ' + primerNombre) > -1) return true;
+        }
+
+        // 5. Si tiene segundo nombre, probar con segundo nombre
+        var partes = nombres.split(' ');
+        if (partes.length > 1) {
+            var segNombre = partes[1];
+            if (segNombre.length > 2) {
+                if (titulo.indexOf(segNombre + ' ' + apPaterno) > -1) return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function getPubsCandidato(candidato) {
+    return allPublicaciones.filter(function(p) {
+        return matchCandidatoPub(candidato, p);
+    });
+}
+
+function getPublicacionesCount(candidato) {
+    return getPubsCandidato(candidato).length;
+}
+
+function getReaccionesTotal(candidato) {
+    var total = 0;
+    getPubsCandidato(candidato).forEach(function(p) {
+        total += parseInt(p.total_reacciones) || 0;
+    });
+    return total;
+}
+
+function metaItem(label, value) {
+    if (!value) return '';
+    return '<div class="profile-meta-item"><div class="label">' + label + '</div><div class="value">' + esc(str(value)) + '</div></div>';
+}
+
+function infoItem(label, value) {
+    return '<div class="info-item"><div class="label">' + label + '</div><div class="value">' + esc(str(value || '-')) + '</div></div>';
+}
+
+function moneyCard(label, value, isTotal) {
+    return '<div class="money-card ' + (isTotal ? 'total' : '') + '"><div class="money-label">' + label + '</div><div class="money-value">' + formatMoney(value) + '</div></div>';
+}
+
+// ============================================================
+// INIT ON LOAD
+// ============================================================
+init();
+</script>
+</body>
+</html>
