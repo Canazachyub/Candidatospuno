@@ -180,6 +180,26 @@
             font-size: 14px;
         }
 
+        .btn-consulta {
+            display: inline-block;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 14px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .btn-consulta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+            text-decoration: none;
+            color: white;
+        }
+
         @media (max-width: 1200px) {
             .table-container {
                 overflow-x: auto;
@@ -194,6 +214,7 @@
     <div class="header">
         <h1>📊 Dashboard de Candidatos - EG2026</h1>
         <p>Análisis automatizado de perfiles políticos • Última actualización: 02/02/2026 18:48</p>
+        <a href="consulta/" class="btn-consulta">📋 Consultar Hojas de Vida y Redes Sociales</a>
     </div>
 
     <div class="stats-bar">
